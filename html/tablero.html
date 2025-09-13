@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/styles/tablero.css">
+    <title>Monopoly</title>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 📱 Botón (solo en móvil) -->
+            <div class="d-lg-none">
+                <button class="btn btn-danger m-2" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+                    ☰ Menú
+                </button>
+            </div>
+
+            <!-- 🖥️ Menú fijo en desktop -->
+            <div class="col-lg-2 d-none d-lg-block bg-black text-white p-3">
+                <h5>Menú</h5>
+                <ul class="list-unstyled">
+                    <li>Opción 1</li>
+                    <li>Opción 2</li>
+                    <li>Opción 3</li>
+                </ul>
+            </div>
+
+            <!-- 📱 Menú offcanvas en móvil -->
+            <div class="offcanvas offcanvas-start bg-danger text-white" tabindex="-1" id="sidebarMobile">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Menú</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="list-unstyled">
+                        <li>Opción 1</li>
+                        <li>Opción 2</li>
+                        <li>Opción 3</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tablero">
+                <div class="celda parking">FREE <br> 🚘 <br> PARKING </div>
+                <div class="celda rojo">KENTUCKY AVENUE <br> $220</div>
+                <div class="celda suerte"></div>
+                <div class="celda rojo">INDIANA AVENUE <br> $220</div>
+                <div class="celda rojo">ILLINOIS AVENUE <br> $240</div>
+                <div class="celda ferrocarril">B.&.O RAILROAD <br> 🚂 <br> $200</div>
+                <div class="celda amarillo">ATLANTIC AVENUE <br> $260</div>
+                <div class="celda amarillo">VENTNOR AVENUE <br> $260</div>
+                <div class="celda agua">WATER WORKS <br> $150</div>
+                <div class="celda amarillo">MARVIN GARDENS <br> $280</div>
+                <div class="celda ir-carcel">GO TO <br> 👮🏻<br> JAIL</div>
+
+                <div class="celda naranja columna-izquierda">NEW YORK AVENUE <br> $200</div>
+                <div class="centro"></div>
+                <div class="celda verde columna-derecha">PACIFIC AVENUE <br> $300</div>
+
+                <div class="celda naranja columna-izquierda">TENNESSEE AVENUE <br> $180</div>
+                <div class="centro"></div>
+                <div class="celda verde columna-derecha">NORTH CAROLINA AVENUE <br> $300</div>
+
+                <div class="celda comunidad columna-izquierda"></div>
+                <div class="centro"></div>
+                <div class="celda comunidad columna-derecha"></div>
+
+                <div class="celda naranja columna-izquierda">ST.JAMES PLACE <br> $180</div>
+                <div class="centro"></div>
+                <div class="celda verde columna-derecha">PENNSYLVANIA AVENUE <br> $320</div>
+
+                <div class="celda ferrocarril columna-izquierda">PENNSYLVANIA RAILROAD <br> $200</div>
+                <div class="centro"><img src="/assets/imagenes/logo.png" alt="Logo" class="logo"></div>
+                <div class="celda ferrocarril columna-derecha">SHORT LINE <br>🚂<br> $200</div>
+
+                <div class="celda rosa columna-izquierda">VIRGINIA AVENUE<br> $160</div>
+                <div class="centro"></div>
+                <div class="celda suerte columna-derecha"></div>
+
+                <div class="celda rosa columna-izquierda">STATES AVENUE <br> $140</div>
+                <div class="centro"></div>
+                <div class="celda azul-oscuro columna-derecha">PARK PLACE <br> $350</div>
+
+                <div class="celda luz columna-izquierda">ELECTRIC COMPANY <br> 💡<br> $150</div>
+                <div class="centro"></div>
+                <div class="celda lujo columna-derecha">LUXURY TAX 💍 <br> PAY $100</div>
+
+                <div class="celda rosa columna-izquierda">ST. CHARLES PLACE <br> $140</div>
+                <div class="centro"></div>
+                <div class="celda azul-oscuro columna-derecha">BOARDWALK <br> $400</div>
+
+                <div class="celda carcel">IN JAIL</div>
+                <div class="celda azul-claro">CONNECTICUT AVENUE <br> $120</div>
+                <div class="celda azul-claro">VERMONT AVENUE <br> $100</div>
+                <div class="celda suerte"></div>
+                <div class="celda azul-claro">ORIENTAL AVENUE <br> $100</div>
+                <div class="celda ferrocarril">READING RAILROAD <br> $200</div>
+                <div class="celda ingresos">INCOME TAX PAY <br> $200</div>
+                <div class="celda marron">BALTIC AVENUE <br> $60</div>
+                <div class="celda comunidad"></div>
+                <div class="celda marron">MEDITERRANEAN AVENUE <br> $60</div>
+                <div class="celda inicio">COLLECT $200 SALARY AS YOU PASS</div>
+
+            </div>
+        </div>
+
+
+</body>

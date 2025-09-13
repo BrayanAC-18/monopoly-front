@@ -1,0 +1,113 @@
+/* Casillas */
+:root{
+  --color-amarillo: #F6F930;
+  --color-rojo: #EF271B;
+  --color-verde: #00CC66;
+  --color-azul-oscuro: #2274A5;
+  --color-azul-claro: #cbf3f0;
+  --color-rosa: #ff9770;
+  --color-naranja: #E28413;
+  --color-marron: #772f1a; 
+  
+}
+
+.rojo{
+  background:linear-gradient(white 80%,var(--color-rojo) 20%)
+}
+.amarillo{
+  background:linear-gradient(white 80%,var(--color-amarillo) 20%)
+}
+.verde{
+  background:linear-gradient(to left, white 80%,var(--color-verde) 20%)
+}
+.azul-oscuro{
+  background:linear-gradient(to left,white 80%,var(--color-azul-oscuro) 20%)
+}
+.azul-claro{
+  background:linear-gradient(to top, white 80%,var(--color-azul-claro) 20%)
+}
+.rosa{
+  background:linear-gradient(to right,white 80%,var(--color-rosa) 20%)
+}
+.naranja{
+  background:linear-gradient(to right,white 80%,var(--color-naranja) 20%)
+}
+.marron{
+  background:linear-gradient(to top,white 80%,var(--color-marron) 20%)
+}
+
+
+.container{
+    display: flex;
+}
+
+body{
+    cursor: url("/assets/cursores/normal.cur"), auto;
+}
+a, button {
+  cursor: url("../assets/cursores/click.cur"), pointer !important;
+}
+input[type="text"], textarea {
+    cursor: url("/assets/cursores/text.cur"), text;
+}
+
+.columna-derecha{
+  writing-mode: vertical-lr;
+}
+.columna-izquierda{
+   writing-mode: sideways-lr;
+}
+.tablero {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(11, 1fr); /* 11 columnas iguales */
+  grid-template-rows: repeat(11, 1fr);    /* 11 filas iguales */
+  width: 180vmin;   /* cuadrado responsivo */
+  height: 180vmin;
+  margin: auto;
+}
+
+
+/*Configuracion de tablero para Nest Hub*/
+@media (width: 1024px) and (height: 600px) {
+  .tablero {
+    width: 140vmin;
+    height: 180vmin;
+  }
+}
+
+/*Configuracion de tablero para Nest Hub Max*/
+@media (width: 1280px) and (height: 800px) {
+  .tablero {
+    width: 130vmin;
+    height: 150vmin;
+  }
+}
+
+.celda {
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2vmin; 
+  overflow: hidden;  
+  padding: 3px;   
+  text-align: center;
+}
+
+.centro {
+  border: none;
+  grid-column: span 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.logo{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* centra perfectamente */
+  width: 70%;  /* ajusta tamaño según quieras */
+}
