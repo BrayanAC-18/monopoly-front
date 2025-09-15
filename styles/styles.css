@@ -1,0 +1,117 @@
+/* styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
+:root {
+  --main-red: #d62828;
+  --main-yellow: #f3db08;
+  --main-blue: #1aaea6;
+  --main-white: #ffffff;
+  --main-black: #222;
+  --main-gray: #eee;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url('images/fondo-monopoly.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(to bottom right , var(--main-black), var(--main-red
+  ));
+  color: var(--main-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.main-menu {
+  background-color: var(--main-white);
+  backdrop-filter: blur(6px); /* desenfoque */
+  -webkit-backdrop-filter: blur(6px); /* compatibilidad Safari */
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 360px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.menu-header h1 {
+  color: var(--main-red);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--main-black);
+  margin-bottom: 2rem;
+}
+
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.menu-btn {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.menu-btn.play {
+  background-color: var(--main-yellow);
+  color: var(--main-black);
+}
+
+.menu-btn.rankings {
+  background-color: var(--main-blue);
+  color: var(--main-black);
+}
+
+.menu-btn.settings {
+  background-color: var(--main-black);
+  color: var(--main-white);
+}
+
+.menu-btn.exit {
+  background-color: var(--main-red);
+  color: var(--main-white);
+}
+
+.menu-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.menu-footer {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.brand-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.negrita {
+  font-weight: bold;
+  font-style: italic;
+}
+
+
+
