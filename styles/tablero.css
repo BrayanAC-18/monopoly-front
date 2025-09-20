@@ -1,39 +1,39 @@
 /* Casillas */
 :root{
-  --color-amarillo: #F6F930;
-  --color-rojo: #EF271B;
-  --color-verde: #00CC66;
-  --color-azul-oscuro: #2274A5;
-  --color-azul-claro: #cbf3f0;
-  --color-rosa: #ff9770;
-  --color-naranja: #E28413;
-  --color-marron: #772f1a; 
+  --color-yellow: #F6F930;
+  --color-red: #EF271B;
+  --color-green: #00CC66;
+  --color-purple: #6A4C93;
+  --color-blue: #cbf3f0;
+  --color-pink: #ff9770;
+  --color-orange: #E28413;
+  --color-brown: #772f1a; 
   
 }
 
-.rojo{
-  background:linear-gradient(white 80%,var(--color-rojo) 20%)
+.red{
+  background:linear-gradient(white 80%,var(--color-red) 20%)
 }
-.amarillo{
-  background:linear-gradient(white 80%,var(--color-amarillo) 20%)
+.yellow{
+  background:linear-gradient(white 80%,var(--color-yellow) 20%)
 }
-.verde{
-  background:linear-gradient(to left, white 80%,var(--color-verde) 20%)
+.green{
+  background:linear-gradient(to left, white 80%,var(--color-green) 20%)
 }
-.azul-oscuro{
-  background:linear-gradient(to left,white 80%,var(--color-azul-oscuro) 20%)
+.blue{
+  background:linear-gradient(to left,white 80%,var(--color-blue) 20%)
 }
-.azul-claro{
-  background:linear-gradient(to top, white 80%,var(--color-azul-claro) 20%)
+.purple{
+  background:linear-gradient(to top, white 80%,var(--color-purple) 20%)
 }
-.rosa{
-  background:linear-gradient(to right,white 80%,var(--color-rosa) 20%)
+.pink{
+  background:linear-gradient(to right,white 80%,var(--color-pink) 20%)
 }
-.naranja{
-  background:linear-gradient(to right,white 80%,var(--color-naranja) 20%)
+.orange{
+  background:linear-gradient(to right,white 80%,var(--color-orange) 20%)
 }
-.marron{
-  background:linear-gradient(to top,white 80%,var(--color-marron) 20%)
+.brown{
+  background:linear-gradient(to top,white 80%,var(--color-brown) 20%)
 }
 
 
@@ -42,7 +42,7 @@
 }
 
 body{
-    cursor: url("/assets/cursores/normal.cur"), auto;
+  cursor: url("/assets/cursores/normal.cur"), auto;
 }
 a, button {
   cursor: url("../assets/cursores/click.cur"), pointer !important;
@@ -52,19 +52,19 @@ input[type="text"], textarea {
 }
 
 .columna-derecha{
-  writing-mode: vertical-lr;
+  writing-mode: sideways-rl;
 }
 .columna-izquierda{
    writing-mode: sideways-lr;
 }
-.tablero {
+#tablero {
   position: relative;
   display: grid;
   grid-template-columns: repeat(11, 1fr); /* 11 columnas iguales */
   grid-template-rows: repeat(11, 1fr);    /* 11 filas iguales */
   width: 180vmin;   /* cuadrado responsivo */
   height: 180vmin;
-  margin: auto;
+  top: 2vh;
 }
 
 
@@ -104,10 +104,23 @@ input[type="text"], textarea {
 }
 
 
-.logo{
+#logo{
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* centra perfectamente */
   width: 70%;  /* ajusta tamaño según quieras */
+}
+
+#dados{
+  position: fixed;
+  bottom: 15vh;
+  right: 10vw;          
+ width: clamp(120px, 20vw, 200px); 
+  cursor: url("../assets/cursores/click.cur"), pointer;
+}
+
+.desactivado{
+  opacity: 0.7; 
+  cursor: url("/assets/cursores/unavailable.cur"), not-allowed !important;
 }
