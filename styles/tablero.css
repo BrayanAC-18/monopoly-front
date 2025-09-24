@@ -1,5 +1,6 @@
 /* Casillas */
 :root{
+  --color-white: #fffae2;
   --color-yellow: #F6F930;
   --color-red: #EF271B;
   --color-green: #00CC66;
@@ -12,28 +13,28 @@
 }
 
 .red{
-  background:linear-gradient(white 80%,var(--color-red) 20%)
+  background:linear-gradient(var(--color-white) 80%,var(--color-red) 20%)
 }
 .yellow{
-  background:linear-gradient(white 80%,var(--color-yellow) 20%)
+  background:linear-gradient(var(--color-white) 80%,var(--color-yellow) 20%)
 }
 .green{
-  background:linear-gradient(to left, white 80%,var(--color-green) 20%)
+  background:linear-gradient(to left, var(--color-white) 80%,var(--color-green) 20%)
 }
 .blue{
-  background:linear-gradient(to left,white 80%,var(--color-blue) 20%)
+  background:linear-gradient(to left,var(--color-white) 80%,var(--color-blue) 20%)
 }
 .purple{
-  background:linear-gradient(to top, white 80%,var(--color-purple) 20%)
+  background:linear-gradient(to top, var(--color-white) 80%,var(--color-purple) 20%)
 }
 .pink{
-  background:linear-gradient(to right,white 80%,var(--color-pink) 20%)
+  background:linear-gradient(to right,var(--color-white) 80%,var(--color-pink) 20%)
 }
 .orange{
-  background:linear-gradient(to right,white 80%,var(--color-orange) 20%)
+  background:linear-gradient(to right,var(--color-white) 80%,var(--color-orange) 20%)
 }
 .brown{
-  background:linear-gradient(to top,white 80%,var(--color-brown) 20%)
+  background:linear-gradient(to top,var(--color-white) 80%,var(--color-brown) 20%)
 }
 
 
@@ -53,6 +54,7 @@ input[type="text"], textarea {
 
 .columna-derecha{
   writing-mode: sideways-rl;
+  
 }
 .columna-izquierda{
    writing-mode: sideways-lr;
@@ -85,14 +87,18 @@ input[type="text"], textarea {
 }
 
 .celda {
-  border: 1px solid black;
+  position: relative;        /* necesario para posicionar el precio */
+  border: 2px solid black;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 2vmin; 
-  overflow: hidden;  
-  padding: 3px;   
+  justify-content: center;   /* centra solo el nombre */
+  font-size: 2vmin;
+  overflow: hidden;
+  margin: 0.5px;
+  background-color: var(--color-white);            /* altura fija de la celda */
+  box-sizing: border-box;
   text-align: center;
+  padding: 6px;
 }
 
 .centro {
@@ -101,8 +107,29 @@ input[type="text"], textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #faedcd;
 }
 
+.precio {
+  position: absolute;
+  bottom: 0;
+  justify-content: center;
+  font-weight: bold;
+  color: #000;
+}
+
+.columna-izquierda .precio {
+  right: 0;
+  color: #000;
+  transform: translateY(-50%);
+  top: 50%; 
+}
+.columna-derecha .precio {
+  left: 0;
+  color: #000;
+  transform: translateY(-50%);
+  top: 50%; 
+}
 
 #logo{
   position: absolute;

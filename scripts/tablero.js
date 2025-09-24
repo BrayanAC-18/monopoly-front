@@ -14,21 +14,21 @@ document.addEventListener("DOMContentLoaded", function () {
     indexD = 0
     for (let i = data.left.length-1 ; i >= 0; i--) {
       if (i == data.left.length-1){
-        tablero.innerHTML += `<div class="celda ${data.left[i].color || ""}">${data.left[i].name}<br>${data.left[i].price || ""}</div>`;
+        tablero.innerHTML += `<div class="celda nombre ${data.left[i].color || ""}">${data.left[i].name}<br>${data.left[i].price || ""}</div>`;
         data.top.forEach(casilla => {
-          tablero.innerHTML += `<div class="celda ${casilla.color || ""}">${casilla.name}<br>${casilla.price || ""}</div>`;
+          tablero.innerHTML += `<div class="celda nombre ${casilla.color || ""}">${casilla.name}<br>${casilla.price ? `<span class="precio">$${casilla.price}</span>` : ""}</div>`;
         });
       }
       else if (i==0){
-          tablero.innerHTML += `<div class="celda ${data.left[i].color || "" }">${data.left[i].name}<br>${data.left[i].price || ""}</div>`;
-            for (let j = data.bottom.length-1 ; j >= 0; j--) {
-              tablero.innerHTML += `<div class="celda ${data.bottom[j].color || ""}">${data.bottom[j].name}<br>${data.bottom[j].price || ""}</div>`;
-            }
+          tablero.innerHTML += `<div class="celda nombre ${data.left[i].color || "" }">${data.left[i].name}<br>${data.left[i].price || ""}</div>`;
+            data.top.slice().reverse().forEach(casilla => {
+               tablero.innerHTML += `<div class="celda nombre ${casilla.color || ""}">${casilla.name}<br>${casilla.price ? `<span class="precio">$${casilla.price}</span>`: ""}</div>`;
+            });
       }
       else{
-        tablero.innerHTML += `<div class="celda columna-izquierda ${data.left[i].color || ""}">${data.left[i].name}<br>${data.left[i].price || ""}</div>`;
+        tablero.innerHTML += `<div class="celda nombre columna-izquierda ${data.left[i].color || ""}">${data.left[i].name}<br>${data.left[i].price ? `<span class="precio">$${data.left[i].price}</span>` : ""}</div>`;
         tablero.innerHTML += `<div class="centro"></div>`;
-        tablero.innerHTML += `<div class="celda columna-derecha ${data.right[indexD].color || ""}">${data.right[indexD].name}<br>${data.right[indexD].price || ""}</div>`;
+        tablero.innerHTML += `<div class="celda nombre columna-derecha ${data.right[indexD].color || ""}">${data.right[indexD].name}<br>${data.right[indexD].price ? `<span class="precio">$${data.right[indexD].price}</span>` : ""}</div>`;
         indexD++;
       }
     };
