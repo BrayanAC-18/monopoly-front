@@ -1,13 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let accion = localStorage.getItem("jugarBtn");
-  if (accion == "crearTablero") {
     let tablero = document.getElementById("tablero");
     fetch("http://127.0.0.1:5000/board")
       .then((response) => response.json())
       .then((data) => {
         cargarTablero(data)
       });
-  }
 
   function cargarTablero(data){
     tablero.innerHTML = "";
