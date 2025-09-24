@@ -5,45 +5,45 @@ document.addEventListener("DOMContentLoaded", () => {
   const userModal = document.getElementById("userModal");
   const numPlayersInput = document.getElementById("numPlayers");
   const confirmCountBtn = document.getElementById("confirmCountBtn");
-  const saveBtnContainer = document.getElementById("saveBtnContainer");
+  const saveBtnContainer = document.getElementById("iniciarPartidaContainer");
 
   let playerCount = 0;
   const colors = ["Verde", "Rojo", "Azul", "Amarillo"];
 
   //  Obtener lista de países desde API
   //  Obtener lista de países desde API
-async function fetchCountries() {
-  try {
-    const response = await fetch("https://restcountries.com/v3.1/all");
-    if (!response.ok) throw new Error("Error al consultar la API");
+  async function fetchCountries() {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/countries");
+      if (!response.ok) throw new Error("Error al consultar la API");
 
-    const data = await response.json();
+      const data = await response.json();
 
-    return data
-      .map(c => {
-        // Si existe traducción al español, úsala. Si no, usa el nombre común en inglés
-        return c.translations?.spa?.common || c.name.common;
-      })
-      .filter(Boolean) // elimina posibles valores null/undefined
-      .sort((a, b) => a.localeCompare(b));
-  } catch (error) {
-    console.error(" Error al cargar países:", error);
-    return [];
+      return data
+        .map((c) => {
+          const [code, name] = Object.entries(c)[0];
+          return { code, name };
+        })
+    } catch (error) {
+      console.error(" Error al cargar países:", error);
+      return [];
+    }
   }
-}
-
+  
 
   // Crear formulario dinámico de jugadores
   async function createPlayerForms(numPlayers) {
     const countries = await fetchCountries();
+    print(countries);
     playersContainer.innerHTML = "";
 
     for (let i = 1; i <= numPlayers; i++) {
       const color = colors[i - 1]; // asigna color único
 
       const countryOptions = countries
-        .map(c => `<option value="${c}">${c}</option>`)
-        .join("");
+      .map((c) => {return `<option value="${c.code}">${c.name}</option>`;
+      })
+      .join("");
 
       const playerFormHTML = `
         <div class="card mb-3 p-3" id="player-${i}">
@@ -53,7 +53,7 @@ async function fetchCountries() {
               <input type="text" class="form-control" name="nickname-${i}" placeholder="Nickname" required>
             </div>
             <div class="col-md-4">
-              <select class="form-select" name="country-${i}" required>
+              <select class="form-select country" name="country-${i}" data-player="${i}" required>
                 <option value="">Seleccione un país</option>
                 ${countryOptions}
               </select>
@@ -62,14 +62,21 @@ async function fetchCountries() {
               <input type="text" class="form-control" value="${color}" readonly>
               <small class="text-muted">Color</small>
             </div>
-            <div class="col-md-2">
-              <input type="number" class="form-control" value="1500" readonly>
-              <small class="text-muted">Score</small>
+            <div id="countryImg-${i}" class="col-md-2">
             </div>
           </div>
         </div>
       `;
       playersContainer.insertAdjacentHTML("beforeend", playerFormHTML);
+      playersContainer.querySelectorAll(".country").forEach(select => {
+        select.addEventListener("change", (e) => {
+          let countryValue = e.target.value.toUpperCase(); //nombre del country
+          let playerId = e.target.dataset.player;
+          let flagDiv = document.getElementById(`countryImg-${playerId}`);
+          flagDiv.innerHTML = `<img class="bandera" id="${playerId}-${countryValue}" src="https://flagsapi.com/${countryValue}/flat/64.png">`;
+        });
+
+      });
     }
 
     playersContainer.style.display = "block";
@@ -101,7 +108,9 @@ async function fetchCountries() {
     const players = [];
 
     for (let i = 1; i <= playerCount; i++) {
-      const nickname = playerForm.querySelector(`[name="nickname-${i}"]`)?.value;
+      const nickname = playerForm.querySelector(
+        `[name="nickname-${i}"]`
+      )?.value;
       const country = playerForm.querySelector(`[name="country-${i}"]`)?.value;
       const color = colors[i - 1];
 
