@@ -26,7 +26,6 @@ body {
 .background {
   position: fixed;
   inset: 0;
-  background: url('../images/fondo-monopoly.jpg') no-repeat center center fixed;
   background-size: cover;
   filter: blur(6px) brightness(0.75); /* ligero blur general en el tablero */
   z-index: -2;
@@ -116,8 +115,11 @@ body {
 }
 
 #iniciarPartida {
+  display: block;
   font-weight: bold;
   font-size: 18px;
+  width: 100% !important;
+  border-radius: 50px;
 }
 .modal-body{
   justify-content: center !important;

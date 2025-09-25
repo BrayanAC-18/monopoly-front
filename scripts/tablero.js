@@ -1,14 +1,30 @@
-document.addEventListener("DOMContentLoaded", function () {
+import Player from "../modals/player.js";
+import Game from "../modals/game.js";
+document.addEventListener("DOMContentLoaded", async function () {
+  
     let tablero = document.getElementById("tablero");
-    fetch("http://127.0.0.1:5000/board")
-      .then((response) => response.json())
-      .then((data) => {
-        cargarTablero(data)
-      });
+    let casillas = [];
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/board");
+        const data = await response.json();
+
+        // Cargar el tablero
+        cargarTablero(data);
+
+        // Unir todas las casillas en un solo array
+        casillas = ["bottom", "top", "left", "right"].reduce((acc, key) => {
+            return acc.concat(data[key] || []);
+        }, []);
+
+        console.log(casillas); // ✅ siempre tendrá los datos
+    } catch (error) {
+        console.error("Error cargando tablero:", error);
+    }
 
   function cargarTablero(data){
     tablero.innerHTML = "";
-    indexD = 0
+    let indexD = 0;
     for (let i = data.left.length-1 ; i >= 0; i--) {
       if (i == data.left.length-1){
         tablero.innerHTML += `<div id="casilla-${data.left[i].id}" class="celda nombre ${data.left[i].color || ""}">${data.left[i].name}<br>${data.left[i].price || ""}</div>`;
@@ -30,5 +46,22 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
     tablero.innerHTML += `<img id="logo" src="/assets/imagenes/logo.png">`;
+    let casillas = []
+    
   }
+
+  let game = new Game(casillas)
+  let dados = document.getElementById("dados")
+  dados.addEventListener("click", () => {
+    if (!dados.classList.contains("desactivado")){
+      game.takeTurn()
+    }
+  })
+  dados.addEventListener("dblclick", () => {
+    if (dados.classList.contains("desactivado")){
+      let valor = prompt("Ingresa el valor de los dados (2-12):");
+    }
+  })
+  
+  
 })

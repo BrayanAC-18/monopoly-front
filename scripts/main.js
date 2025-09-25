@@ -5,12 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const userModal = document.getElementById("userModal");
   const numPlayersInput = document.getElementById("numPlayers");
   const confirmCountBtn = document.getElementById("confirmCountBtn");
-  const saveBtnContainer = document.getElementById("iniciarPartidaContainer");
+  const iniciarPartida = document.getElementById("iniciarPartida");
 
   let playerCount = 0;
   const colors = ["Verde", "Rojo", "Azul", "Amarillo"];
 
-  //  Obtener lista de países desde API
   //  Obtener lista de países desde API
   async function fetchCountries() {
     try {
@@ -34,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Crear formulario dinámico de jugadores
   async function createPlayerForms(numPlayers) {
     const countries = await fetchCountries();
-    print(countries);
     playersContainer.innerHTML = "";
 
     for (let i = 1; i <= numPlayers; i++) {
@@ -78,9 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       });
     }
-
-    playersContainer.style.display = "block";
-    saveBtnContainer.style.display = "flex";
   }
 
   // Abrir modal
@@ -103,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Guardar jugadores en localStorage
-  playerForm.addEventListener("submit", (e) => {
+  iniciarPartida.addEventListener("click", (e) => {
     e.preventDefault();
     const players = [];
 
@@ -128,6 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("monopolyPlayers", JSON.stringify(players));
 
     alert("Jugadores guardados. ¡Vamos al tablero!");
-    window.location.href = "html/tablero.html"; // Redirigir al tablero
+    document.location.href = "html/tablero.html"; // Redirigir al tablero
   });
 });
