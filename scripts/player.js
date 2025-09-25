@@ -29,12 +29,12 @@ export default class Player {
     console.log(`${this.nick} pagó $${amount} ${receiver ? "a " + receiver.nick : ""}`);
   }
 
-  buyProperty(space) {
-    if (!space.owner && this.cash >= space.price) {
-      this.cash -= space.price;
-      this.properties.push(space.id);
-      space.owner = this.id;
-      console.log(`${this.nick} compró ${space.name} por $${space.price}`);
+  buyProperty(casilla) {
+    if (!casilla.owner && this.cash >= casilla.price) {
+      this.cash -= casilla.price;
+      this.properties.push(casilla.id);
+      casilla.owner = this.id;sapce
+      console.log(`${this.nick} compró ${casilla.name} por $${casilla.price}`);
       return true;
     }
     return false;
