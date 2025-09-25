@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 
 :root {
   --main-red: #d62828;
@@ -27,7 +26,6 @@ body {
 .background {
   position: fixed;
   inset: 0;
-  background: url('../images/fondo-monopoly.jpg') no-repeat center center fixed;
   background-size: cover;
   filter: blur(6px) brightness(0.75); /* ligero blur general en el tablero */
   z-index: -2;
@@ -35,23 +33,22 @@ body {
 
 /* Menú principal: vidrio translúcido (glassmorphism) */
 .main-menu {
+  font-family: 'Fredoka One', cursive;
   position: relative;
   width: 360px;
   max-width: 700px;
   margin: 100px auto; /* deja espacio para navbar fixed */
   padding: 2rem;
   border-radius: 18px;
-  background: var(--glass-bg);
+  background: white;
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px) saturate(140%); /* blur sutil del fondo detrás del panel */
-  -webkit-backdrop-filter: blur(4px) saturate(140%);
-  color: #fff;
+  color: #000000;
   text-align: center;
 }
 
 /* Header */
-.menu-header h1 { color: var(--main-red); font-size: 2.2rem; margin-bottom: 0.25rem; }
-.subtitle { font-size: 0.95rem; color: #f3f3f3; margin-bottom: 1.4rem; }
+.menu-header h1 { color: var(--main-red); font-size: 2.2rem; margin-bottom: 0.25rem; font-weight: bold; }
+.subtitle { font-size: 0.95rem; color: #000000; margin-top: 1rem; }
 
 /* Section de botones: relative para el overlay blur detrás */
 .menu-options {
@@ -64,17 +61,7 @@ body {
   border-radius: 14px;
 }
 
-/* Este div crea el blur SOLO detrás del contenedor de botones */
-.menu-options-blur {
-  position: absolute;
-  inset: 6px;                  /* pequeño margen interior */
-  border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  z-index: 0;
-  pointer-events: none;        /* para que los botones sigan siendo clicables */
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-}
+
 
 /* Botones por encima del overlay */
 .menu-options > .menu-btn {
@@ -104,7 +91,7 @@ body {
 .menu-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.35); }
 
 /* Footer */
-.menu-footer { margin-top: 1.6rem; font-size: 0.85rem; color: #ddd; }
+.menu-footer { margin-top: 1.6rem; font-size: 0.85rem; color: #666464; }
 
 /* Branding */
 .brand-logo { height: 36px; width: auto; object-fit: contain; }
@@ -117,3 +104,34 @@ body {
 
 /* Cards de jugadores dentro del modal */
 .card { background: rgba(255,255,255,0.03); border: none; color: #fff; }
+
+#iniciarPartidaContainer {            /* activo flexbox */
+  justify-content: center !important;   /* centra horizontal */
+}
+
+.centrar {
+  display: flex;               /* activamos flexbox */
+  justify-content: center;     /* centra en horizontal */
+}
+
+#iniciarPartida {
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+  width: 100% !important;
+  border-radius: 50px;
+}
+.modal-body{
+  justify-content: center !important;
+  font-family: 'Fredoka One', cursive;
+}
+
+[id^="countryImg-"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bandera {
+  display: block;
+  transform: translateY(-10px);
+}

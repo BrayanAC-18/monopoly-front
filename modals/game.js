@@ -1,6 +1,6 @@
 // Game.js
 import Player from "./player.js";
-import { showPopup } from "./popup.js";
+import { showPopup } from "../scripts/popup.js";
 
 export default class Game { 
   constructor(tablero) {
@@ -31,7 +31,7 @@ export default class Game {
     const dice = this.rollDice();
 
     player.move(dice.sum, this.tablero);
-    const casilla = this.tablero[player.position];
+    const casilla = this.tablero.find(c => c.id === player.position);
     this.accionCasilla(player, casilla);
 
     if (!dice.isDouble) {

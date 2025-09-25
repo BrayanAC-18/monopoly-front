@@ -1,4 +1,4 @@
-// Player.js
+
 export default class Player {
   constructor(nick_name, country, score = 1500) {
     this.nick = nick_name;       // nombre del jugador
@@ -21,6 +21,7 @@ export default class Player {
       this.cash += 200;
       console.log(`${this.nick} pasó por salida (+$200)`);
     }
+    return this.position
   }
 
   pay(amount, receiver = null) {

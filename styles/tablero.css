@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka+One&family=Bebas+Neue&display=swap');
 /* Casillas */
 :root{
   --color-white: #fffae2;
@@ -99,6 +100,7 @@ input[type="text"], textarea {
   box-sizing: border-box;
   text-align: center;
   padding: 6px;
+  font-family: 'Fredoka One', cursive;
 }
 
 .centro {
