@@ -71,4 +71,5 @@ export default class Jugador {
     getPais() { return this.pais; }
     getFicha() { return this.ficha; }
     getPosicion() { return this.posicion; }
+    setPosicion(casillaId) {this.posicion = casillaId}
 }
