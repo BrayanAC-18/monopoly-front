@@ -156,3 +156,13 @@ input[type="text"], textarea {
   background: black; /* disponible */
   margin-bottom: 2px;
 }
+
+.jugadores {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.jugadores span {
+  font-size: 18px;
+}
