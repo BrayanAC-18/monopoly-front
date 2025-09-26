@@ -5,13 +5,14 @@ import Sidebar from "../modals/sidebar.js";
 import Propiedad from "../modals/propiedad.js";
 import Especial from "../modals/especial.js";
 import Ferrocarril from "../modals/ferrocarril.js";
-import Casilla from "../modals/casilla.js";
-import Dado from "../modals/dado.js";
+import ModalPopup from "../modals/popup.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   let tableroHtml = document.getElementById("tablero");
   let casillas = [];
   let data;
+
+  //  Cargar datos del backend
   try {
     const response = await fetch("http://127.0.0.1:5000/board");
     data = await response.json();
@@ -28,97 +29,110 @@ document.addEventListener("DOMContentLoaded", async function () {
                 c.price,
                 c.rent,
                 c.color,
-                c.mortage
+                c.mortgage
               );
             case "railroad":
-              return new Ferrocarril(c.name, c.price);
+              return new Ferrocarril(c.id, c.name, c.price, c.rent);
             case "special":
             case "tax":
             case "chance":
             case "community_chest":
               return new Especial(c.id, c.name, c.type, c.action);
             default:
-              console.warn("Tipo desconocido:", c.tipo);
-              return null; // o undefined
+              console.warn("Tipo desconocido:", c.type);
+              return null;
           }
         })
-        .filter((c) => c !== null); // eliminar casillas inválidas
+        .filter((c) => c !== null);
     });
   } catch (error) {
     console.error("Error cargando tablero:", error);
   }
-  console.log(casillas);
-  //crear instancia de tablero y renderizarlo
+
+  //  Crear instancia de Tablero y renderizarlo
   const tablero = new Tablero(casillas, tableroHtml);
   tablero.renderizar(data);
 
-  //crear una lista de jugadores
+  //  Crear lista de jugadores desde localStorage
   const playersData = JSON.parse(localStorage.getItem("monopolyPlayers")) || [];
   const jugadores = playersData.map(
     (p) => new Jugador(p.id, p.nickname, p.country, p.ficha)
   );
   localStorage.clear();
 
-  // Renderizar sidebar
+  //  Renderizar sidebar
   const desktop = document.getElementById("sidebarDesktop");
   const mobile = document.getElementById("sidebarMobileContent");
   const sidebar = new Sidebar(desktop, mobile, jugadores);
   sidebar.renderizar();
 
-  // Crear juego
-  let juego = new Juego(jugadores, casillas);
+  //  Crear juego con el tablero, no con las casillas
+  let juego = new Juego(jugadores, tablero);
 
+  //  Función para renderizar jugadores en el tablero
   function renderJugadores(jugadores) {
-    // 1️⃣ Limpia fichas anteriores
+    // Limpiar fichas previas
     document.querySelectorAll(".jugadores").forEach((div) => div.remove());
 
-    // 2️⃣ Coloca cada jugador en su casilla actual
     jugadores.forEach((jugador) => {
       const casillaDiv = document.getElementById(
         `casilla-${jugador.getPosicion()}`
       );
-      if (!casillaDiv) return;
+      if (!casillaDiv) {
+        console.warn(
+          `No existe casilla con id casilla-${jugador.getPosicion()}`
+        );
+        return;
+      }
 
-      // Contenedor de jugadores dentro de la casilla
+      // Crear contenedor de fichas si no existe
       let contenedor = casillaDiv.querySelector(".jugadores");
       if (!contenedor) {
         contenedor = document.createElement("div");
         contenedor.classList.add("jugadores");
+        contenedor.style.display = "flex";
+        contenedor.style.gap = "4px";
         casillaDiv.appendChild(contenedor);
       }
 
-      // Agregar la ficha (emoji)
+      // Añadir ficha (emoji/ícono)
       const span = document.createElement("span");
-      span.textContent = jugador.getFicha(); // emoji del jugador
+      span.textContent = jugador.getFicha();
       span.title = jugador.getNombre();
       contenedor.appendChild(span);
     });
   }
 
-  dados.addEventListener("click", () => {
+  //  Dibujar fichas al inicio
+  renderJugadores(juego.getJugadores());
+
+  //  Instancia modal
+  const modal = new ModalPopup();
+
+  //  Evento dados con popup
+  let dadosBtn = document.getElementById("dados");
+  dadosBtn.addEventListener("click", () => {
     const { jugador, dados } = juego.turno();
 
-    showPopup(
-      `${jugador.getNombre()} sacó ${dados.sum} (${dados.d1} + ${
-        dados.d2
-      }). ¿Mover ficha?`,
+    modal.show(
+      `${jugador.getNombre()} sacó ${dados.d1} + ${dados.d2} = ${dados.sum}`,
+      jugador,
       () => {
-        // ✅ mover al jugador actual
         juego.moverJugadorActual(dados.sum);
-
-        // ✅ renderizar fichas en tablero
         renderJugadores(juego.getJugadores());
-
-        // ✅ pasar turno si no es doble
         juego.siguienteTurno(dados.isDouble);
-      },
-      () => {
-        console.log("El jugador decidió no moverse aún.");
       }
     );
   });
 
+  //  Tirada manual con doble click
   dados.addEventListener("dblclick", () => {
-    let valor = prompt("Ingresa el valor de los dados (2-12):");
+    let valor = parseInt(prompt("Ingresa el valor de los dados (2-12):"));
+    if (isNaN(valor)) return;
+
+    const jugador = juego.getTurnoActual();
+    jugador.mover(valor, tablero);
+    renderJugadores(juego.getJugadores());
+    juego.siguienteTurno();
   });
 });

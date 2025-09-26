@@ -166,3 +166,9 @@ input[type="text"], textarea {
 .jugadores span {
   font-size: 18px;
 }
+
+#popupJugadorFicha {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+

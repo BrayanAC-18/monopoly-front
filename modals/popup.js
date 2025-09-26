@@ -1,19 +1,40 @@
-export function showPopup(message, onYes, onNo) {
-  const popup = document.getElementById("popup");
-  const msg = document.getElementById("popup-message");
-  const yesBtn = document.getElementById("popup-yes");
-  const noBtn = document.getElementById("popup-no");
+export default class ModalPopup {
+  constructor() {
+    this.modalElement = document.getElementById("popupDados");
+    this.messageElement = document.getElementById("popupMessage");
+    this.fichaElement = document.getElementById("popupJugadorFicha");
+    this.confirmButton = document.getElementById("popupConfirm");
 
-  msg.textContent = message;
-  popup.classList.remove("hidden");
+    // Instancia Bootstrap Modal
+    this.modal = new bootstrap.Modal(this.modalElement, {
+      backdrop: "static",
+      keyboard: false
+    });
+  }
 
-  yesBtn.onclick = () => {
-    popup.classList.add("hidden");
-    if (onYes) onYes();
-  };
+  show(message, jugador, onConfirm, onCancel) {
+    // Mensaje
+    this.messageElement.textContent = message;
 
-  noBtn.onclick = () => {
-    popup.classList.add("hidden");
-    if (onNo) onNo();
-  };
+    // Mostrar ficha/emoji
+    this.fichaElement.textContent = jugador.getFicha();
+
+    // Limpiar eventos previos
+    this.confirmButton.onclick = null;
+    this.modalElement.querySelector('[data-bs-dismiss="modal"]').onclick = null;
+
+    // Confirmar
+    this.confirmButton.onclick = () => {
+      this.modal.hide();
+      if (onConfirm) onConfirm();
+    };
+
+    // Cancelar
+    this.modalElement.querySelector('[data-bs-dismiss="modal"]').onclick = () => {
+      if (onCancel) onCancel();
+    };
+
+    // Mostrar modal
+    this.modal.show();
+  }
 }
