@@ -1,9 +1,12 @@
-import Propiedad from "../modals/propiedad.js";
-export default class  Ferrocarril extends Propiedad {
-  constructor(nombre, precio) {
-    super(nombre, precio, 25); // renta base 25
-  }
 
+import Casilla from "../modals/casilla.js";
+export default class  Ferrocarril extends Casilla {
+    constructor(posicion, nombre, precio, mortgage, rent) {
+        super(posicion, nombre);
+        this.precio = precio
+        this.mortgage = mortgage
+        this.rent = rent
+    }
   calcularRenta(jugador, todasPropiedades) {
     let ferros = todasPropiedades.filter(
       p => p instanceof Ferrocarril && p.dueñoId === jugador.id

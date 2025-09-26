@@ -16,38 +16,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     const response = await fetch("http://127.0.0.1:5000/board");
     data = await response.json();
 
-    casillas = ["bottom", "top", "left", "right"].flatMap((key) => {
-      const lado = data[key] || [];
-      return lado
-        .map((c) => {
-          switch (c.type) {
-            case "property":
-              return new Propiedad(
-                c.id,
-                c.name,
-                c.price,
-                c.rent,
-                c.color,
-                c.mortage
-              );
-            case "railroad":
-              return new Ferrocarril(c.name, c.price);
-            case "special":
-            case "tax":
-            case "chance":
-            case "community_chest":
-              return new Especial(c.id, c.name, c.type, c.action);
-            default:
-              console.warn("Tipo desconocido:", c.tipo);
-              return null; // o undefined
-          }
-        })
-        .filter((c) => c !== null); // eliminar casillas inválidas
-    });
-  } catch (error) {
-    console.error("Error cargando tablero:", error);
-  }
-  console.log(casillas);
+  casillas = ["bottom","top","left","right"].flatMap(key => {
+  const lado = data[key] || [];
+  return lado.map(c => {
+    switch(c.type) {
+      case "property": return new Propiedad(c.id, c.name, c.price, c.rent, c.color, c.mortgage);
+      case "railroad": return new Ferrocarril(c.id,c.name, c.price,c.mortgage,c.rent);
+      case "special":
+      case "tax":
+      case "chance":
+      case "community_chest": return new Especial(c.id, c.name, c.type, c.action);
+      default:
+        console.warn("Tipo desconocido:", c.tipo);
+        return null; // o undefined
+    }
+  }).filter(c => c !== null); // eliminar casillas inválidas
+});
+} catch (error) {
+  console.error("Error cargando tablero:", error);
+}
+  console.log(casillas)
   //crear instancia de tablero y renderizarlo
   const tablero = new Tablero(casillas, tableroHtml);
   tablero.renderizar(data);
@@ -62,8 +50,10 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Renderizar sidebar
   const desktop = document.getElementById("sidebarDesktop");
   const mobile = document.getElementById("sidebarMobileContent");
-  const sidebar = new Sidebar(desktop, mobile, jugadores);
-  sidebar.renderizar();
+  const sidebar = new Sidebar(desktop,mobile,jugadores)
+  sidebar.renderizar()
+
+  await Especial.cargarCartas();
 
   // Crear juego
   let juego = new Juego(jugadores, casillas);
@@ -116,6 +106,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("El jugador decidió no moverse aún.");
       }
     );
+      const resultadoDados = juego.tirarDados()
+      console.log(resultadoDados)
+      
   });
 
   dados.addEventListener("dblclick", () => {
