@@ -1,31 +1,34 @@
 export default class Jugador {
-    constructor(id,nombre, pais, ficha) {
+    constructor(id, nombre, pais, ficha) {
         this.id = id;
         this.nombre = nombre;
         this.pais = pais;
-        this.ficha = ficha;
+        this.ficha = ficha;   // emoji o ícono
         this.dinero = 1500;
         this.propiedades = [];
         this.enCarcel = false;
-        this.posicion = 0; // posición inicial en el tablero
+        this.posicion = 0;
     }
 
     mover(pasos, tablero) {
         this.posicion = (this.posicion + pasos) % tablero.getCasillas().length;
-        tablero.obtenerCasilla[idCasilla].accion(this); //configurar para que se mueva por ids
+
+        // Ejecuta acción de la casilla en la que cayó
+        const casilla = tablero.getCasilla(this.posicion);
+        casilla.accion(this);
     }
 
     comprar(propiedad) {
-        if (this._dinero >= propiedad.getPrecio()) {
-            this._dinero -= propiedad.getPrecio();
-            propiedad.setDueno(this);
+        if (this.dinero >= propiedad.getPrecio() && !propiedad.getDueño()) {
+            this.dinero -= propiedad.getPrecio();
+            propiedad.setDueño(this);
             this.agregarPropiedad(propiedad);
         }
     }
 
     pagar(cantidad) {
         this.dinero -= cantidad;
-        if (this.dinero < 0) this._dinero = 0;
+        if (this.dinero < 0) this.dinero = 0; // bancarrota
     }
 
     cobrar(cantidad) {
@@ -33,13 +36,17 @@ export default class Jugador {
     }
 
     hipotecar(propiedad) {
-        const dineroRecibido = propiedad.hipotecar();
-        this.cobrar(dineroRecibido);
+        if (this.propiedades.includes(propiedad)) {
+            const dineroRecibido = propiedad.hipotecar();
+            this.cobrar(dineroRecibido);
+        }
     }
 
     deshipotecar(propiedad) {
-        const costo = propiedad.deshipotecar();
-        this.pagar(costo);
+        if (this.propiedades.includes(propiedad)) {
+            const costo = propiedad.deshipotecar();
+            this.pagar(costo);
+        }
     }
 
     agregarPropiedad(propiedad) {
@@ -50,6 +57,7 @@ export default class Jugador {
         this.propiedades = this.propiedades.filter(p => p !== propiedad);
     }
 
+    // Getters y Setters
     getDinero() { return this.dinero; }
     setDinero(cantidad) { this.dinero = Math.max(0, cantidad); }
 
@@ -57,11 +65,10 @@ export default class Jugador {
 
     isEnCarcel() { return this.enCarcel; }
     setEnCarcel(valor) { this.enCarcel = valor; }
-    
-    getId(){return this.id;}
+
+    getId() { return this.id; }
     getNombre() { return this.nombre; }
     getPais() { return this.pais; }
     getFicha() { return this.ficha; }
-
     getPosicion() { return this.posicion; }
 }

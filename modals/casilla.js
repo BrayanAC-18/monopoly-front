@@ -1,19 +1,18 @@
 export default class Casilla {
-    constructor(id, nombre) {
-        this.getPosicion = id;
-        this.nombre = nombre;
-    }
+  constructor(id, nombre) {
+    this.id = id;         // posición o identificador de la casilla
+    this.nombre = nombre; // nombre que se muestra
+  }
 
-    accion(jugador) {
-        // Implementado en subclases
-        throw new Error("Método abstracto 'accion' debe ser implementado");
-    }
+  accion(jugador) {
+    throw new Error("Método abstracto 'accion' debe ser implementado por la subclase");
+  }
 
-    getPosicion() {
-        return this.getPosicion
-    }
+  getPosicion() {
+    return this.id;
+  }
 
-    getNombre() {
-        return this.id;
-    }
+  getNombre() {
+    return this.nombre;
+  }
 }

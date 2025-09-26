@@ -9,35 +9,56 @@ export default class Juego {
     this.dado1 = new Dado();
     this.dado2 = new Dado();
   }
-  iniciarJuego() {}
 
-  siguienteTurno(dados) {
-    if (!dados.isDouble) {
-      this.turnoActual = (this.turnoActual + 1) % this.jugadores.length;
-    }
+  iniciarJuego() {
+    this.turnoActual = 0;
   }
 
   tirarDados() {
     const d1 = this.dado1.lanzar();
     const d2 = this.dado2.lanzar();
-    const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
-    return dados;
+    return { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
+  }
+
+  turno() {
+    const jugador = this.jugadores[this.turnoActual];
+    const dados = this.tirarDados();
+
+    jugador.mover(dados.sum, this.tablero);
+
+    if (!dados.isDouble) {
+      this.siguienteTurno();
+    }
+    return { jugador, dados };
+  }
+
+  siguienteTurno() {
+    this.turnoActual = (this.turnoActual + 1) % this.jugadores.length;
   }
 
   getTurnoActual() {
-    return this.turnoActual;
+    return this.jugadores[this.turnoActual];
   }
+
   getJugadores() {
     return this.jugadores;
   }
+
   getRanking() {
     return this.ranking;
   }
+
   calcularGanador() {
-    //sumar dinero + valor de propiedades (casas/hotel) - hipotecas
+    return this.jugadores.reduce((max, j) => {
+      const valorPropiedades = j.propiedades.reduce((acc, p) => acc + p.getPrecio(), 0);
+      const total = j.getDinero() + valorPropiedades;
+      return total > max.total ? { jugador: j, total } : max;
+    }, { jugador: null, total: 0 });
   }
+
   finalizarJuego() {
     const ganador = this.calcularGanador();
-    //enviar POST a backend para raking
+    console.log("Ganador:", ganador.jugador.getNombre(), "con", ganador.total);
+    return ganador;
   }
 }
