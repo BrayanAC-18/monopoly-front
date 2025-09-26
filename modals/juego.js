@@ -2,7 +2,7 @@ import Dado from "./dado.js";
 
 export default class Juego {
   constructor(jugadores = [], tablero = null) {
-    this.tablero = tablero;
+    this.tablero = tablero;         // 👈 siempre instancia de Tablero
     this.jugadores = jugadores;
     this.turnoActual = 0;
     this.ranking = [];
@@ -24,16 +24,21 @@ export default class Juego {
     const jugador = this.jugadores[this.turnoActual];
     const dados = this.tirarDados();
 
-    jugador.mover(dados.sum, this.tablero);
-
-    if (!dados.isDouble) {
-      this.siguienteTurno();
-    }
+    // 👉 Solo devuelvo info, no muevo aún.
     return { jugador, dados };
   }
 
-  siguienteTurno() {
-    this.turnoActual = (this.turnoActual + 1) % this.jugadores.length;
+  moverJugadorActual(pasos) {
+    const jugador = this.jugadores[this.turnoActual];
+    jugador.mover(pasos, this.tablero);
+
+    return jugador; // 👈 devuelve al jugador que se movió
+  }
+
+  siguienteTurno(isDouble = false) {
+    if (!isDouble) {
+      this.turnoActual = (this.turnoActual + 1) % this.jugadores.length;
+    }
   }
 
   getTurnoActual() {
@@ -49,16 +54,27 @@ export default class Juego {
   }
 
   calcularGanador() {
-    return this.jugadores.reduce((max, j) => {
-      const valorPropiedades = j.propiedades.reduce((acc, p) => acc + p.getPrecio(), 0);
-      const total = j.getDinero() + valorPropiedades;
-      return total > max.total ? { jugador: j, total } : max;
-    }, { jugador: null, total: 0 });
+    return this.jugadores.reduce(
+      (max, j) => {
+        const valorPropiedades = j.propiedades.reduce(
+          (acc, p) => acc + p.getPrecio(),
+          0
+        );
+        const total = j.getDinero() + valorPropiedades;
+        return total > max.total ? { jugador: j, total } : max;
+      },
+      { jugador: null, total: 0 }
+    );
   }
 
   finalizarJuego() {
     const ganador = this.calcularGanador();
-    console.log("Ganador:", ganador.jugador.getNombre(), "con", ganador.total);
+    console.log(
+      "Ganador:",
+      ganador.jugador.getNombre(),
+      "con",
+      ganador.total
+    );
     return ganador;
   }
 }
