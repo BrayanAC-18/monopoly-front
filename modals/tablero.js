@@ -65,6 +65,8 @@ export default class Tablero {
     this.tablero.innerHTML += `<img id="logo" src="/assets/imagenes/logo.png">`;
   }
 
+  
+
   obtenerCasilla(idCasilla) {
     //devolver casilla mediante su id
     return this.casillas[posicion];
