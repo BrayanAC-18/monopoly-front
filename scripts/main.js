@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const iniciarPartida = document.getElementById("iniciarPartida");
 
   let playerCount = 0;
-  const colors = ["Verde", "Rojo", "Azul", "Amarillo"];
+  const fichas = ["🐸", "🚗", "🚀", "🌻"];
 
   //  Obtener lista de países desde API
   async function fetchCountries() {
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     playersContainer.innerHTML = "";
 
     for (let i = 1; i <= numPlayers; i++) {
-      const color = colors[i - 1]; // asigna color único
+      const ficha = fichas[i - 1]; // asigna color único
 
       const countryOptions = countries
       .map((c) => {return `<option value="${c.code}">${c.name}</option>`;
@@ -57,8 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
               </select>
             </div>
             <div class="col-md-2">
-              <input type="text" class="form-control" value="${color}" readonly>
-              <small class="text-muted">Color</small>
+              <input type="text" class="form-control" value="${ficha}" readonly>
+              <small class="text-muted">Ficha</small>
             </div>
             <div id="countryImg-${i}" class="col-md-2">
             </div>
@@ -106,11 +106,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const nickname = playerForm.querySelector(
         `[name="nickname-${i}"]`
       )?.value;
-      const country = playerForm.querySelector(`[name="country-${i}"]`)?.value;
-      const color = colors[i - 1];
-
+      const country = playerForm.querySelector(`[name="country-${i}"]`)?.value.toUpperCase();
+      const ficha = fichas[i - 1];
+      const id = i
       if (nickname && country) {
-        players.push({ nickname, country, color, score: 1500 });
+        players.push({id,nickname, country, ficha});
       }
     }
 
