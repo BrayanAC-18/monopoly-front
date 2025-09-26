@@ -21,8 +21,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const lado = data[key] || [];
   return lado.map(c => {
     switch(c.type) {
-      case "property": return new Propiedad(c.id, c.name, c.price, c.rent, c.color, c.mortage);
-      case "railroad": return new Ferrocarril(c.name, c.price);
+      case "property": return new Propiedad(c.id, c.name, c.price, c.rent, c.color, c.mortgage);
+      case "railroad": return new Ferrocarril(c.id,c.name, c.price,c.mortgage,c.rent);
       case "special":
       case "tax":
       case "chance":
@@ -53,13 +53,16 @@ document.addEventListener("DOMContentLoaded", async function () {
   const sidebar = new Sidebar(desktop,mobile,jugadores)
   sidebar.renderizar()
 
+  await Especial.cargarCartas();
+
   // Crear juego
   let juego = new Juego(jugadores,casillas);
 
   // Dados
   let dados = document.getElementById("dados");
   dados.addEventListener("click", () => {
-      dados = juego.tirarDados()
+      const resultadoDados = juego.tirarDados()
+      console.log(resultadoDados)
       
   });
 
