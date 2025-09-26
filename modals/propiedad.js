@@ -1,5 +1,4 @@
 import Casilla from "./casilla.js";
-import { showPopup } from "./popup.js";
 
 export default class Propiedad extends Casilla {
   constructor(posicion, nombre, precio, renta, color, mortgage) {

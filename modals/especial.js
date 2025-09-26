@@ -1,4 +1,4 @@
-import Jugador from "./jugador";
+import Casilla from "../modals/casilla.js";
 export default class Especial extends Casilla {
     constructor(posicion, nombre, tipo, accion) {
         super(posicion, nombre);
