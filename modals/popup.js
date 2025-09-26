@@ -1,4 +1,3 @@
-// popup.js
 export function showPopup(message, onYes, onNo) {
   const popup = document.getElementById("popup");
   const msg = document.getElementById("popup-message");

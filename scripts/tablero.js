@@ -28,15 +28,26 @@ document.addEventListener("DOMContentLoaded", async function () {
   const jugadores = playersData.map(p => new Jugador(p.id,p.nickname, p.country, p.ficha));
   localStorage.clear()
   
+  // Renderizar sidebar
+  const desktop = document.getElementById("sidebarDesktop");
+  const mobile = document.getElementById("sidebarMobileContent");
+  const sidebar = new Sidebar(desktop,mobile,jugadores)
+  sidebar.renderizar()
+
   // Crear juego
   let juego = new Juego(jugadores,casillas);
 
+  // Dados
+  let dados = document.getElementById("dados");
+  dados.addEventListener("click", () => {
+      dados = juego.tirarDados()
+      
+  });
 
-  // Renderizar sidebar
-  const desktop = document.getElementById("sidebarDesktop");
-    const mobile = document.getElementById("sidebarMobileContent");
-  const sidebar = new Sidebar(desktop,mobile,jugadores)
-  sidebar.renderizar()
+  dados.addEventListener("dblclick", () => {
+    let valor = prompt("Ingresa el valor de los dados (2-12):");
+
+  });
   
   
 });

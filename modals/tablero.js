@@ -1,5 +1,5 @@
 export default class Tablero {
-  constructor(casillas = [],tablero) {
+  constructor(casillas = [], tablero) {
     this.casillas = casillas;
     this.tablero = tablero;
   }
@@ -67,10 +67,10 @@ export default class Tablero {
 
   obtenerCasilla(idCasilla) {
     //devolver casilla mediante su id
-    return this._casillas[posicion];
+    return this.casillas[posicion];
   }
 
   getCasillas() {
-    return this._casillas;
+    return this.casillas;
   }
 }
