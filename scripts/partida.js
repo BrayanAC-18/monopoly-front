@@ -17,26 +17,38 @@ document.addEventListener("DOMContentLoaded", async function () {
     const response = await fetch("http://127.0.0.1:5000/board");
     data = await response.json();
 
-  casillas = ["bottom","top","left","right"].flatMap(key => {
-  const lado = data[key] || [];
-  return lado.map(c => {
-    switch(c.type) {
-      case "property": return new Propiedad(c.id, c.name, c.price, c.rent, c.color, c.mortgage);
-      case "railroad": return new Ferrocarril(c.id,c.name, c.price,c.mortgage,c.rent);
-      case "special":
-      case "tax":
-      case "chance":
-      case "community_chest": return new Especial(c.id, c.name, c.type, c.action);
-      default:
-        console.warn("Tipo desconocido:", c.tipo);
-        return null; // o undefined
-    }
-  }).filter(c => c !== null); // eliminar casillas inválidas
-});
-} catch (error) {
-  console.error("Error cargando tablero:", error);
-}
-  console.log(casillas)
+    casillas = ["bottom", "top", "left", "right"].flatMap((key) => {
+      const lado = data[key] || [];
+      return lado
+        .map((c) => {
+          switch (c.type) {
+            case "property":
+              return new Propiedad(
+                c.id,
+                c.name,
+                c.price,
+                c.rent,
+                c.color,
+                c.mortgage
+              );
+            case "railroad":
+              return new Ferrocarril(c.id, c.name, c.price, c.mortgage, c.rent);
+            case "special":
+            case "tax":
+            case "chance":
+            case "community_chest":
+              return new Especial(c.id, c.name, c.type, c.action);
+            default:
+              console.warn("Tipo desconocido:", c.tipo);
+              return null; // o undefined
+          }
+        })
+        .filter((c) => c !== null); // eliminar casillas inválidas
+    });
+  } catch (error) {
+    console.error("Error cargando tablero:", error);
+  }
+  console.log(casillas);
   //crear instancia de tablero y renderizarlo
   const tablero = new Tablero(casillas, tableroHtml);
   tablero.renderizar(data);
@@ -46,13 +58,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   const jugadores = playersData.map(
     (p) => new Jugador(p.id, p.nickname, p.country, p.ficha)
   );
-  localStorage.clear();
 
   //  Renderizar sidebar
   const desktop = document.getElementById("sidebarDesktop");
   const mobile = document.getElementById("sidebarMobileContent");
-  const sidebar = new Sidebar(desktop,mobile,jugadores)
-  sidebar.renderizar()
+  const sidebar = new Sidebar(desktop, mobile, jugadores);
+  sidebar.renderizar();
 
   await Especial.cargarCartas();
 
@@ -80,12 +91,13 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (!contenedor) {
         contenedor = document.createElement("div");
         contenedor.classList.add("jugadores");
-        contenedor.style.display = "flex";
-        contenedor.style.gap = "4px";
-        casillaDiv.appendChild(contenedor);
+        
+        // Insertar después del contenedor de emojis
+        const emojisContainer = casillaDiv.querySelector(".emojis-container");
+        emojisContainer.insertAdjacentElement('afterend', contenedor);
       }
 
-      // Añadir ficha (emoji/ícono)
+      // Añadir ficha (emoji/ícono personalizado del jugador)
       const span = document.createElement("span");
       span.textContent = jugador.getFicha();
       span.title = jugador.getNombre();
@@ -103,19 +115,18 @@ document.addEventListener("DOMContentLoaded", async function () {
   let dadosBtn = document.getElementById("dados");
   dadosBtn.addEventListener("click", () => {
     const { jugador, dados } = juego.turno();
-
+    juego.moverJugadorActual(dados.sum);
+    renderJugadores(juego.getJugadores());
+    sidebar.actualizarScore(jugador.getId(), jugador.dinero);
+    juego.siguienteTurno(dados.isDouble);
+    let posicion = jugador.getPosicion();
+    let casillaActual = tablero.obtenerCasilla(posicion);
     modal.show(
-      `${jugador.getNombre()} sacó ${dados.d1} + ${dados.d2} = ${dados.sum}`,
+      `${jugador.getNombre()} saco ${dados.d1} + ${dados.d2} = ${dados.sum} <br>
+        Cae en la casilla # ${posicion} - ${casillaActual.nombre}`,
       jugador,
-      () => {
-        juego.moverJugadorActual(dados.sum);
-        renderJugadores(juego.getJugadores());
-        juego.siguienteTurno(dados.isDouble);
-      }
+      () => {}
     );
-      const resultadoDados = juego.tirarDados()
-      console.log(resultadoDados)
-      
   });
 
   //  Tirada manual con doble click

@@ -17,11 +17,12 @@ export default class Especial extends Casilla {
         Especial.community = data.community_chest || [];
     }
 
-    async accion(jugador) {
+    async ejecutar(jugador) {
         switch (this.tipo) {
             case "special": // pueden o no tener acción
                 if (this.accion){
                     if (this.accion.money){
+                        console.log(`${jugador.getNombre()} ha cobrado $${this.accion.money} por ${this.nombre}`)
                         jugador.cobrar(this.accion.money)
                     }
                     else{
@@ -31,6 +32,8 @@ export default class Especial extends Casilla {
                 }
                 break;
             case "tax":
+                console.log(this.accion.money)
+                console.log(`${jugador.getNombre()} pagó ${-(this.accion.money)} por ${this.nombre}`);
                 jugador.pagar(-this.accion.money) //en backend esta como negativo, se convierte n positivo
                 break;
             case "chance":{
@@ -43,7 +46,7 @@ export default class Especial extends Casilla {
                 }
                 break;
             }
-            case "community":{
+            case "community_chest":{
                 const carta = this.tomarCarta(Especial.community)
                 console.log(`${jugador.getNombre()} tomó carta: ${carta.description}`);
                 if (carta.action.money < 0){

@@ -28,9 +28,12 @@ export default class Sidebar {
   }
 
   actualizarScore(playerId, newScore) {
-    const card = document.querySelector(`[data-player="${playerId}"]`);
-    if (card) card.querySelector(".score").textContent = newScore;
-  }
+  const cards = document.querySelectorAll(`[data-player="${playerId}"]`); //modificar tanto para desktop como para movil
+  cards.forEach((card) => {
+    const scoreEl = card.querySelector(".score");
+    if (scoreEl) scoreEl.textContent = newScore;
+  });
+}
 
   añadirPropiedad(playerId, propertyName) {
     const card = document.querySelector(`[data-player="${playerId}"]`);

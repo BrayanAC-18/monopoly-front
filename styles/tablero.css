@@ -93,7 +93,7 @@ input[type="text"], textarea {
   display: flex;
   align-items: center;
   justify-content: center;   /* centra solo el nombre */
-  font-size: 2vmin;
+  font-size: 1.7vmin;
   overflow: hidden;
   margin: 0.5px;
   background-color: var(--color-white);            /* altura fija de la celda */
@@ -159,16 +159,21 @@ input[type="text"], textarea {
 
 .jugadores {
   display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 1px;
 }
 .jugadores span {
-  font-size: 18px;
+  font-size: 12px;
 }
 
 #popupJugadorFicha {
   font-size: 3rem;
   margin-bottom: 0.5rem;
+}
+#popupConfirm{
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+  width: 100% !important;
+  border-radius: 50px; 
 }
 

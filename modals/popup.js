@@ -12,9 +12,10 @@ export default class ModalPopup {
     });
   }
 
+  
   show(message, jugador, onConfirm, onCancel) {
     // Mensaje
-    this.messageElement.textContent = message;
+    this.messageElement.innerHTML = message;
 
     // Mostrar ficha/emoji
     this.fichaElement.textContent = jugador.getFicha();

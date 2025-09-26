@@ -14,7 +14,7 @@ export default class Propiedad extends Casilla {
   }
 
   //  Acción al caer en la casilla
-  accion(jugador, juego) {
+  ejecutar(jugador, juego) {
     if (!this.dueño) {
       // Opción de compra
       if (jugador.cash >= this.precio) {    

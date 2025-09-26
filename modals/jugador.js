@@ -1,3 +1,4 @@
+import Sidebar from "../modals/sidebar.js";
 export default class Jugador {
   constructor(id, nombre, pais, ficha) {
     this.id = id;
@@ -22,7 +23,7 @@ export default class Jugador {
 
   if (casilla) {
     // Ejecutar acción de la casilla
-    casilla.accion(this);
+    casilla.ejecutar(this);
   } else {
     console.warn(`No se encontró casilla con id ${this.posicion}`);
   }

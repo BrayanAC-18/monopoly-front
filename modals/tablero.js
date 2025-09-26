@@ -13,11 +13,11 @@ export default class Tablero {
           data.left[i].id
         }" class="celda nombre ${data.left[i].color || ""}">${
           data.left[i].name
-        }<br>${data.left[i].price || ""}</div>`;
+        }<br><div class="emojis-container"></div><br>${data.left[i].price || ""}</div>`;
         data.top.forEach((casilla) => {
           this.tablero.innerHTML += `<div id="casilla-${
             casilla.id
-          }" class="celda nombre ${casilla.color || ""}">${casilla.name}<br>${
+          }" class="celda nombre ${casilla.color || ""}">${casilla.name}<br><div class="emojis-container"></div><br>${
             casilla.price ? `<span class="precio">$${casilla.price}</span>` : ""
           }</div>`;
         });
@@ -26,14 +26,14 @@ export default class Tablero {
           data.left[i].id
         }" class="celda nombre ${data.left[i].color || ""}">${
           data.left[i].name
-        }<br>${data.left[i].price || ""}</div>`;
+        }<br><div class="emojis-container"></div><br>${data.left[i].price || ""}</div>`;
         data.bottom
           .slice()
           .reverse()
           .forEach((casilla) => {
             this.tablero.innerHTML += `<div id="casilla-${
               casilla.id
-            }" class="celda nombre ${casilla.color || ""}">${casilla.name}<br>${
+            }" class="celda nombre ${casilla.color || ""}">${casilla.name}<br><div class="emojis-container"></div><br>${
               casilla.price
                 ? `<span class="precio">$${casilla.price}</span>`
                 : ""
@@ -44,7 +44,7 @@ export default class Tablero {
           data.left[i].id
         }" class="celda nombre columna-izquierda ${data.left[i].color || ""}">${
           data.left[i].name
-        }<br>${
+        }<br><div class="emojis-container"></div><br>${
           data.left[i].price
             ? `<span class="precio">$${data.left[i].price}</span>`
             : ""
@@ -54,7 +54,7 @@ export default class Tablero {
           data.right[indexD].id
         }"class="celda nombre columna-derecha ${
           data.right[indexD].color || ""
-        }">${data.right[indexD].name}<br>${
+        }">${data.right[indexD].name}<br><div class="emojis-container"></div><br>${
           data.right[indexD].price
             ? `<span class="precio">$${data.right[indexD].price}</span>`
             : ""
@@ -68,8 +68,10 @@ export default class Tablero {
   
 
   obtenerCasilla(idCasilla) {
+    console.log(idCasilla)
+    console.log(this.casillas.find(c => c.posicion === idCasilla));
     //devolver casilla mediante su id
-    return this.casillas.find(c => c.id === idCasilla);
+    return this.casillas.find(c => c.posicion === idCasilla);
   }
 
   getCasillas() {

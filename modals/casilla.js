@@ -4,7 +4,7 @@ export default class Casilla {
     this.nombre = nombre; // nombre que se muestra
   }
 
-  accion() {
+  ejecutar() {
   }
 
   getPosicion() {
