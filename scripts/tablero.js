@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   dados.addEventListener("dblclick", () => {
-    if (dados.classList.contains("desactivado")) {
+    if (!dados.classList.contains("desactivado")){
       let valor = prompt("Ingresa el valor de los dados (2-12):");
     }
   });
