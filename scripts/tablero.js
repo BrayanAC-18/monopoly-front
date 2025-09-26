@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Cargar jugadores desde localStorage
   const playersData = JSON.parse(localStorage.getItem("monopolyPlayers")) || [];
   playersData.forEach((p) => {
-    game.addPlayer(p.nickname, p.country, p.score);
+    game.addPlayer(p.nickname, p.country, p.score, p.color);
   });
 
   // Renderizar sidebar

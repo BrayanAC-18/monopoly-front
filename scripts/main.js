@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const iniciarPartida = document.getElementById("iniciarPartida");
 
   let playerCount = 0;
-  const colors = ["Verde", "Rojo", "Azul", "Amarillo"];
+  const colors = ["green", "red", "blue", "yellow"];
 
   //  Obtener lista de países desde API
   async function fetchCountries() {

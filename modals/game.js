@@ -2,17 +2,20 @@
 import Player from "./player.js";
 import { showPopup } from "./popup.js";
 
-export default class Game { 
-  constructor(tablero) {
-    this.tablero = tablero;
+export default class Game {
+  constructor(board, uiCallbacks) {
+    this.board = board;
     this.players = [];
     this.turnIndex = 0;
     this.log = [];
+    this.ui = uiCallbacks; // { renderSidebar, updateScore, addProperty }
   }
 
-  addPlayer(nick_name, country, score = 1500) {
+  addPlayer(nick_name, country, score = 1500, color = "gray") {
     const player = new Player(nick_name, country, score);
+    player.color = color; // guardar color también
     this.players.push(player);
+    if (this.ui?.renderSidebar) this.ui.renderSidebar(this.players);
     return player;
   }
 
@@ -27,38 +30,46 @@ export default class Game {
   }
 
   takeTurn() {
+    const playerIndex = this.turnIndex;
     const player = this.currentPlayer();
     const dice = this.rollDice();
 
-    player.move(dice.sum, this.tablero);
-    const casilla = this.tablero.find(c => c.id === player.position);
-    this.accionCasilla(player, casilla);
+    player.move(dice.sum, this.board);
+    const space = this.board[player.position];
+    this.resolverCasilla(player, space, playerIndex);
 
     if (!dice.isDouble) {
       this.turnIndex = (this.turnIndex + 1) % this.players.length;
     }
 
-    return { dice, casilla, player };
+    return { dice, space, player };
   }
 
-  accionCasilla(player, casilla) {
-    if (casilla.type === "property" || casilla.type === "railroad") {
-      if (!casilla.owner) {
+  resolverCasilla(player, space, playerIndex) {
+    if (space.type === "property" || space.type === "railroad") {
+      if (!space.owner) {
         showPopup(
-          `${player.nick}, ¿quieres comprar ${casilla.name} por $${casilla.price}?`,
-          () => player.buyProperty(casilla),
-          () => console.log(`${player.nick} no compró ${casilla.name}`)
+          `${player.nick}, ¿quieres comprar ${space.name} por $${space.price}?`,
+          () => {
+            if (player.buyProperty(space)) {
+              this.ui?.addProperty(playerIndex, space.name);
+              this.ui?.updateScore(playerIndex, player.cash);
+            }
+          },
+          () => console.log(`${player.nick} no compró ${space.name}`)
         );
-      } else if (casilla.owner !== player.id) {
-        const owner = this.players.find(p => p.id === casilla.owner);
-        const rent = casilla.rent.base || casilla.rent["1"];
+      } else if (space.owner !== player.id) {
+        const ownerIndex = this.players.findIndex(p => p.id === space.owner);
+        const owner = this.players[ownerIndex];
+        const rent = space.rent.base || space.rent["1"];
         player.pay(rent, owner);
-        this.log.push(`${player.nick} pagó $${rent} a ${owner.nick}`);
+        this.ui?.updateScore(playerIndex, player.cash);
+        this.ui?.updateScore(ownerIndex, owner.cash);
       }
-    } else if (casilla.type === "tax") {
-      player.pay(-casilla.action.money);
-      this.log.push(`${player.nick} pagó impuesto $${-casilla.action.money}`);
-    } else if (casilla.type === "special" && casilla.action?.goTo === "jail") {
+    } else if (space.type === "tax") {
+      player.pay(-space.action.money);
+      this.ui?.updateScore(playerIndex, player.cash);
+    } else if (space.type === "special" && space.action?.goTo === "jail") {
       player.position = 10;
       player.inJail = true;
       this.log.push(`${player.nick} fue enviado a la cárcel`);
