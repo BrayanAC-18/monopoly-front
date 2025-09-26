@@ -2,7 +2,8 @@ import Jugador from "../modals/jugador.js";
 import Juego from "../modals/juego.js";
 import Tablero from "../modals/tablero.js";
 import Sidebar from "../modals/sidebar.js";
-import { renderJugadores } from "../modals/renderJugadores.js";
+import Propiedad from "../modals/propiedad.js";
+import Especial from "../modals/especial.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   let tableroHtml = document.getElementById("tablero");
@@ -12,8 +13,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     const response = await fetch("http://127.0.0.1:5000/board");
     data = await response.json();
     // Unir todas las casillas en un solo array
-    casillas = ["bottom", "top", "left", "right"].reduce((acc, key) => {
-      return acc.concat(data[key] || []);
+    const casillasLados = ["bottom", "top", "left", "right"].reduce((acc, key) => {
+      const lado = data[key] || [];
+
+      casillas = lado.map(c => {
+        switch (c.tipo){
+          case "propiedad":
+            return new Propiedad(c.id,)
+
+        }
+
+      })
     }, []);
   } catch (error) {
     console.error("Error cargando tablero:", error);
