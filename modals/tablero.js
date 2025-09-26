@@ -69,7 +69,7 @@ export default class Tablero {
 
   obtenerCasilla(idCasilla) {
     //devolver casilla mediante su id
-    return this.casillas[posicion];
+    return this.casillas.find(c => c.id === idCasilla);
   }
 
   getCasillas() {
