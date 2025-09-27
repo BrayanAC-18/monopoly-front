@@ -16,8 +16,15 @@ export default class Jugador {
   // Total de casillas en el tablero
   const totalCasillas = tablero.getCasillas().length;
 
+  const posicionInicial = this.posicion;
   // Nueva posición (ciclo tipo 0 → 39 → 0 otra vez)
   this.posicion = (this.posicion + pasos) % totalCasillas;
+
+  // Si pasó por la casilla de salida
+  if (this.posicion < posicionInicial) {
+    this.dinero += 200; // Dar 200 al jugador
+    console.log(`${this.nombre} pasó por la salida y recibió 200`);
+  }
 
   // Buscar la casilla por ID
   const casilla = tablero.obtenerCasilla(this.posicion);
@@ -92,7 +99,7 @@ export default class Jugador {
 
   getPropiedades() { return this.propiedades; }
 
-  isEnCarcel() { return this.enCarcel; }
+  getEnCarcel() { return this.enCarcel; }
   setEnCarcel(valor) { this.enCarcel = valor; }
 
   getId() { return this.id; }

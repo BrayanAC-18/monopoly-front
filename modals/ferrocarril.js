@@ -13,7 +13,7 @@ export default class Ferrocarril extends Casilla {
     const todasPropiedades = dueño.getPropiedades();
     let ferros = todasPropiedades.filter((p) => p instanceof Ferrocarril).length;
     if (ferros === 0) return 0;
-    const renta = this.renta.ferros.toString()
+    const renta = this.renta[ferros.toString()]
     return renta
   }
 

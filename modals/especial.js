@@ -21,11 +21,7 @@ export default class Especial extends Casilla {
         switch (this.tipo) {
             case "special": // pueden o no tener acción
                 if (this.accion){
-                    if (this.accion.money){
-                        console.log(`${jugador.getNombre()} ha cobrado $${this.accion.money} por ${this.nombre}`)
-                        jugador.cobrar(this.accion.money)
-                    }
-                    else{
+                    if (this.accion.goTo){
                         jugador.setEnCarcel(true)
                         jugador.setPosicion(10)
                     }

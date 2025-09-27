@@ -117,27 +117,58 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   dadosBtn.addEventListener("click", () => {
     const { jugador, dados } = juego.turno();
-    ejecutarTurno(jugador, dados);
+    console.log(jugador)
+    if (!jugador.getEnCarcel()){
+      ejecutarTurno(jugador, dados);
+    }
+    else{
+      jugadorEnCarcel(jugador)
+    }  
   });
 
   // Doble click → turno con dados ingresados manualmente
   dadosBtn.addEventListener("contextmenu", (e) => {
     e.preventDefault(); // evitar el menú contextual del navegador
-    let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
-    let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
+    const jugador = juego.getTurnoActual()
+    if (!jugador.getEnCarcel()){
+      let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
+      let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
 
-    if (isNaN(d1) || isNaN(d2) || d1 < 1 || d1 > 6 || d2 < 1 || d2 > 6) {
-      alert("Valores inválidos, deben estar entre 1 y 6.");
-      return;
+      if (isNaN(d1) || isNaN(d2) || d1 < 1 || d1 > 6 || d2 < 1 || d2 > 6) {
+        alert("Valores inválidos, deben estar entre 1 y 6.");
+        return;
+      }
+
+    
+      const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
+
+      ejecutarTurno(jugador, dados);
+    }
+    else{
+      jugadorEnCarcel(jugador)
     }
 
-    const jugador = juego.getTurnoActual()
-    const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
-
-    ejecutarTurno(jugador, dados);
   });
 
-  
+  function jugadorEnCarcel(jugador){
+    modal.show(
+      `<b>Estas en carcel.</b> <br>
+      Para seguir jugando debes de pagar <b>$50</b>`,jugador,
+      () => {
+        if (jugador.pagar(50)){
+          jugador.setEnCarcel(false)
+          sidebar.actualizarScore(jugador.getId(),jugador.getDinero())
+        }
+        else{
+        alert("Parece que no tienes suficiente dinero para salir de carcel 🙈")
+        juego.siguienteTurno();
+        actualizarEmojiTurno(juego.getTurnoActual());}
+      },
+      () =>{
+        juego.siguienteTurno();
+        actualizarEmojiTurno(juego.getTurnoActual());
+      },true,null,{})
+  }
 
   function ejecutarTurno(jugador, dados) {
     // Mostrar emoji del jugador actual en la navbar
@@ -184,6 +215,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           jugador.pagar(renta);
           dueño.cobrar(renta)
           sidebar.actualizarScore(jugador.getId(), jugador.getDinero())
+          sidebar.actualizarScore(dueño.getId(), dueño.getDinero())
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
         },
