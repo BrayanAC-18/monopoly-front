@@ -1,66 +1,81 @@
 import Casilla from "../modals/casilla.js";
 
 export default class Especial extends Casilla {
-    constructor(posicion, nombre, tipo, accion) {
-        super(posicion, nombre);
-        this.tipo = tipo; // special, tax, chance.
-        this.accion = accion; //objeto o null      
-    }
+  constructor(posicion, nombre, tipo, accion) {
+    super(posicion, nombre);
+    this.tipo = tipo;
+    this.accion = accion;
+  }
 
-    static chance = [];
-    static community = [];
+  // contenedores de cartas (estáticos)
+  static chance = [];
+  static community = [];
 
-    static async cargarCartas() {
-        const response = await fetch("http://127.0.0.1:5000/board");
-        const data = await response.json();
-        Especial.chance = data.chance || [];
-        Especial.community = data.community_chest || [];
-    }
+  // toast manager (se setea desde partida.js)
+  static toastManager = null;
 
-    async ejecutar(jugador) {
-        switch (this.tipo) {
-            case "special": // pueden o no tener acción
-                if (this.accion){
-                    if (this.accion.goTo){
-                        jugador.setEnCarcel(true)
-                        jugador.setPosicion(10)
-                    }
-                }
-                break;
-            case "tax":
-                console.log(`${jugador.getNombre()} pagó ${-(this.accion.money)} por ${this.nombre}`);
-                jugador.pagar(-this.accion.money) //en backend esta como negativo, se convierte n positivo
-                break;
-            case "chance":{
-                const carta = this.tomarCarta(Especial.chance)
-                console.log(`${jugador.getNombre()} tomó carta: ${carta.description}`);
-                if (carta.action.money < 0){
-                    jugador.pagar(-carta.action.money)
-                }else{
-                    jugador.cobrar(carta.action.money)
-                }
-                break;
-            }
-            case "community_chest":{
-                const carta = this.tomarCarta(Especial.community)
-                console.log(`${jugador.getNombre()} tomó carta: ${carta.description}`);
-                if (carta.action.money < 0){
-                    jugador.pagar(-carta.action.money)
-                }else{
-                    jugador.cobrar(carta.action.money)
-                }
-                break;
-            }
+  static setToastManager(manager) {
+    Especial.toastManager = manager;
+  }
+
+  static async cargarCartas() {
+    const response = await fetch("http://127.0.0.1:5000/board");
+    const data = await response.json();
+    Especial.chance = data.chance || [];
+    Especial.community = data.community_chest || [];
+  }
+
+  async ejecutar(jugador) {
+    // helper local para mostrar toast si hay manager
+    const showToast = (title, message, type = "primary", delay = 4000) => {
+      if (Especial.toastManager) {
+        Especial.toastManager.show({ title, message, type, delay });
+      } else {
+        // fallback: console.log (no rompe nada)
+        console.log(`[TOAST] ${title} - ${message}`);
+      }
+    };
+
+    switch (this.tipo) {
+      case "special":
+        if (this.accion?.goTo) {
+          jugador.setEnCarcel(true);
+          jugador.setPosicion(10);
+          showToast("Casilla Especial", `${jugador.getNombre()} fue enviado a la cárcel.`, "danger");
         }
-    }
+        break;
 
-    tomarCarta(cartas){
-        const index = Math.floor(Math.random() * cartas.length);
-        const carta = cartas[index];
-        return carta;
-    }
+      case "tax":
+        jugador.pagar(-this.accion.money);
+        showToast("Impuesto", `${jugador.getNombre()} pagó $${-this.accion.money} por ${this.nombre}`, "warning");
+        break;
 
-    getTipo() {
-        return this.tipo;
+      case "chance": {
+        const carta = this.tomarCarta(Especial.chance);
+        if (carta.action.money < 0) jugador.pagar(-carta.action.money);
+        else jugador.cobrar(carta.action.money);
+
+        showToast("Sorpresa", `${jugador.getNombre()} tomó carta: ${carta.description}`, "info");
+        break;
+      }
+
+      case "community_chest": {
+        const carta = this.tomarCarta(Especial.community);
+        if (carta.action.money < 0) jugador.pagar(-carta.action.money);
+        else jugador.cobrar(carta.action.money);
+
+        showToast("Caja de Comunidad", `${jugador.getNombre()} tomó carta: ${carta.description}`, "primary");
+        break;
+      }
     }
+  }
+
+  tomarCarta(cartas) {
+    const index = Math.floor(Math.random() * cartas.length);
+    return cartas[index];
+  }
+
+  getTipo() {
+    return this.tipo;
+  }
 }

@@ -6,11 +6,15 @@ import ModalPopup from "../modals/popup.js";
 import Propiedad from "../modals/propiedad.js";
 import Sidebar from "../modals/sidebar.js";
 import Tablero from "../modals/tablero.js";
+import ToastManager from "../modals/toastManager.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   let tableroHtml = document.getElementById("tablero");
   let casillas = [];
   let data;
+
+  const toast = new ToastManager(); // toma los elementos del HTML (template + container)
+  Especial.setToastManager(toast);
 
   //  Cargar datos del backend
   try {
@@ -199,8 +203,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         ) {
           manejarCompraOCobro(casillaActual, jugador, dados);
         } else {
-          juego.siguienteTurno(dados.isDouble);
-          actualizarEmojiTurno(juego.getTurnoActual());
+          // si es Especial
+          if (typeof casillaActual.ejecutar === "function") {
+            casillaActual.ejecutar(jugador); // aquí aparecerá el toast
+            juego.siguienteTurno(dados.isDouble);
+            actualizarEmojiTurno(juego.getTurnoActual());
+          }
         }
       }
     );
