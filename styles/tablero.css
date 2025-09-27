@@ -226,6 +226,25 @@ input[type="text"], textarea {
   opacity: 0.8;
 }
 
+/* Asegura que los toasts aparezcan sobre el tablero */
+.toast-container {
+  z-index: 2000;
+}
+
+/* Tamaño y espaciado agradable */
+.toast .toast-body {
+  font-size: 0.95rem;
+  line-height: 1.1;
+}
+
+/* Opcional: pequeñas variaciones en la paleta para visibilidad */
+.toast.text-bg-primary    { background-color: #0d6efd; }
+.toast.text-bg-success    { background-color: #198754; }
+.toast.text-bg-warning    { background-color: #ffc107; color: #000; }
+.toast.text-bg-danger     { background-color: #dc3545; }
+.toast.text-bg-info       { background-color: #0dcaf0; color: #000; }
+
+
 
 
 
