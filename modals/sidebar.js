@@ -1,3 +1,5 @@
+import Ferrocarril from "../modals/ferrocarril.js";
+import ModalPopup from "../modals/popup.js";
 export default class Sidebar {
   constructor(desktopContainer, mobileContainer, jugadores) {
     this.desktop = desktopContainer;
@@ -28,29 +30,73 @@ export default class Sidebar {
   }
 
   actualizarScore(playerId, newScore) {
-  const cards = document.querySelectorAll(`[data-player="${playerId}"]`); //modificar tanto para desktop como para movil
-  cards.forEach((card) => {
-    const scoreEl = card.querySelector(".score");
-    if (scoreEl) scoreEl.textContent = newScore;
-  });
-}
+    const cards = document.querySelectorAll(`[data-player="${playerId}"]`); //modificar tanto para desktop como para movil
+    cards.forEach((card) => {
+      const scoreEl = card.querySelector(".score");
+      if (scoreEl) scoreEl.textContent = newScore;
+    });
+  }
 
-  añadirPropiedad(playerId, propertyName) {
-    const card = document.querySelector(`[data-player="${playerId}"]`);
-    if (card) {
-      const ul = card.querySelector(".properties");
-      const li = document.createElement("li");
-      li.textContent = propertyName;
+  añadirPropiedad(playerId, propiedad) {
+    const cards = document.querySelectorAll(`[data-player="${playerId}"]`);
+    if (!cards.length) return;
 
-      const btn = document.createElement("button");
-      btn.textContent = "Hipotecar";
-      btn.onclick = () => {
-        li.classList.add("mortgaged");
-        console.log(`Jugador ${playerId} hipotecó ${propertyName}`);
-      };
+    cards.forEach((card) => {
+      // Buscar o crear el select de propiedades
+      let select = card.querySelector("select.properties-select");
+      if (!select) {
+        select = document.createElement("select");
+        select.classList.add("properties-select");
+        select.innerHTML = `<option disabled selected>Propiedades</option>`;
+        card.appendChild(select);
 
-      li.appendChild(btn);
-      ul.appendChild(li);
-    }
+        // Evento al cambiar la selección
+        select.addEventListener("change", (e) => {
+          const option = e.target.options[e.target.selectedIndex];
+          if (option && option.propiedadObj) {
+            const p = option.propiedadObj;
+            const jugador = this.jugadores.find(
+                (j) => j.getId() === playerId
+              );
+            // Diferenciar Propiedad y Ferrocarril
+            let renta = 0;
+            if (p instanceof Ferrocarril) {
+              
+              renta = p.calcularRenta(jugador);
+            } else {
+              renta = p.calcularRenta();
+            }
+              const modal = new ModalPopup(true)
+
+              modal.show( //mensaje
+                `<b>Informacion de propieda</b> <br> 
+                <b>Nombre:</b> ${p.getNombre()} <br> 
+                <b>Renta:</b> $${renta} <br> 
+                <b>Color:</b> ${p.getColor?p.getColor():"N/A"} <br> 
+                <b>Mortgage:</b> ${p.getMortgage()} <br> 
+                <b>Hipotecada:</b> ${p.getHipotecada()?"Sí":"No"}`, 
+                jugador,null,null,false,null, 
+                {
+                onHipotecar: () => {
+                  jugador.hipotecar(p);
+                  this.actualizarScore(jugador.getId(), jugador.getDinero());
+                },
+                onComprarCasa: () => {
+                  //implementar
+                }
+              });
+          }
+
+          e.target.selectedIndex = 0; // volver al placeholder
+        });
+      }
+
+      // Crear la opción para la propiedad
+      const option = document.createElement("option");
+      option.textContent = propiedad.getNombre();
+      option.propiedadObj = propiedad;
+
+      select.appendChild(option);
+    });
   }
 }

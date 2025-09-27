@@ -1,10 +1,11 @@
 import Sidebar from "../modals/sidebar.js";
 export default class Jugador {
-  constructor(id, nombre, pais, ficha) {
+  constructor(id, nombre, pais, ficha, color) {
     this.id = id;
     this.nombre = nombre;
     this.pais = pais;
     this.ficha = ficha;   // emoji o ícono
+    this.color = color;
     this.dinero = 1500;
     this.propiedades = [];
     this.enCarcel = false;
@@ -30,13 +31,24 @@ export default class Jugador {
 }
 
 
-  comprar(propiedad) {
+  comprarPropiedad(propiedad) {
     if (this.dinero >= propiedad.precio && !propiedad.getDueño()) {
       this.dinero -= propiedad.precio;
       propiedad.setDueño(this);
-      this.agregarPropiedad(propiedad);
       return true;
     }
+    alert("Sin saldo suficiente")
+    return false;
+  }
+
+  comprarFerro(ferrocarril) {
+    console.log(ferrocarril)
+    if (this.dinero >= ferrocarril.precio && !ferrocarril.getDueño()) {
+      this.dinero -= ferrocarril.precio;
+      ferrocarril.setDueño(this);
+      return true;
+    }
+    alert("Sin saldo suficiente")
     return false;
   }
 
@@ -57,7 +69,9 @@ export default class Jugador {
   hipotecar(propiedad) {
     if (this.propiedades.includes(propiedad)) {
       const dineroRecibido = propiedad.hipotecar();
-      this.cobrar(dineroRecibido);
+      if (dineroRecibido > 0){
+        this.cobrar(dineroRecibido);
+      }
     }
   }
 
@@ -66,10 +80,6 @@ export default class Jugador {
       const costo = propiedad.deshipotecar();
       this.pagar(costo);
     }
-  }
-
-  agregarPropiedad(propiedad) {
-    this.propiedades.push(propiedad);
   }
 
   eliminarPropiedad(propiedad) {

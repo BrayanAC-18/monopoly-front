@@ -13,33 +13,25 @@ export default class Propiedad extends Casilla {
     this.mortgage = mortgage; // Valor de hipoteca
   }
 
-  //  Acción al caer en la casilla
-  ejecutar(jugador, juego) {
-    if (!this.dueño) {
-      // Opción de compra
-      if (jugador.cash >= this.precio) {    
-        // aquí puedes abrir popup
-        jugador.comprar(this);
-        this.setDueño(jugador);
-      }
-    } else if (this.dueño !== jugador && !this.hipotecada) {
-      // Paga renta
-      const renta = this.calcularRenta();
-      jugador.pagar(renta);
-      this.dueño.cobrar(renta);
-    } else if (this.dueño === jugador) {
-      // Oportunidad de construir
-      if (this.puedeConstruir(juego)) {
-        // abrir popup: ¿Construir casa u hotel?
-      }
-    }
-  }
 
   //  Renta dinámica
   calcularRenta() {
     if (this.hotel) return this.renta.hotel;
     if (this.casas > 0) return this.renta.casas[this.casas - 1];
     return this.renta.base;
+  }
+  getMortgage(){
+    return this.mortgage;
+  }
+
+  getColor(){
+    return this.color
+  }
+  getPrecio(){
+    return this.precio
+  }
+  getHipotecada(){
+    return this.hipotecada
   }
 
   // 🔑 Dueño
@@ -56,7 +48,6 @@ export default class Propiedad extends Casilla {
   hipotecar() {
     if (!this.hipotecada) {
       this.hipotecada = true;
-      this.dueño.cash += this.mortgage;
       return this.mortgage;
     }
     return 0;
@@ -75,20 +66,20 @@ export default class Propiedad extends Casilla {
   }
 
   //  Construcciones
-  puedeConstruir(juego) {
+  puedeConstruir(tablero) {
     if (!this.dueño) return false;
     // Todas las propiedades del mismo color
-    const grupo = juego.casillas.filter(
+    const grupo = tablero.casillas.filter(
       (c) => c.color === this.color && c instanceof Propiedad
     );
     return grupo.every((p) => p.dueño === this.dueño);
   }
 
-  construirCasa(juego) {
-    if (this.puedeConstruir(juego) && this.casas < 4 && !this.hotel) {
-      const costo = Math.floor(this.precio * 0.5);
+  construirCasa(tablero) {
+    if (this.puedeConstruir(tablero) && this.casas < 4 && !this.hotel) {
+      const costo = 100
       if (this.dueño.cash >= costo) {
-        this.dueño.cash -= costo;
+        this.dueño.pagar(costo)
         this.casas++;
         return true;
       }
@@ -98,9 +89,9 @@ export default class Propiedad extends Casilla {
 
   construirHotel(juego) {
     if (this.puedeConstruir(juego) && this.casas === 4 && !this.hotel) {
-      const costo = this.precio;
+      const costo = 250;
       if (this.dueño.cash >= costo) {
-        this.dueño.cash -= costo;
+        this.dueño.pagar(costo)
         this.casas = 0;
         this.hotel = true;
         return true;

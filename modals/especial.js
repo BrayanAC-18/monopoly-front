@@ -32,7 +32,6 @@ export default class Especial extends Casilla {
                 }
                 break;
             case "tax":
-                console.log(this.accion.money)
                 console.log(`${jugador.getNombre()} pagó ${-(this.accion.money)} por ${this.nombre}`);
                 jugador.pagar(-this.accion.money) //en backend esta como negativo, se convierte n positivo
                 break;

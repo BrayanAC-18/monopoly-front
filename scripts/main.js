@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let playerCount = 0;
   const fichas = ["🐸", "🚗", "🚀", "🌻"];
+  const colores = ["verde","rojo","azul","amarillo"]
 
   //  Obtener lista de países desde API
   async function fetchCountries() {
@@ -108,9 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
       )?.value;
       const country = playerForm.querySelector(`[name="country-${i}"]`)?.value.toUpperCase();
       const ficha = fichas[i - 1];
+      const color = colores[i - 1]
       const id = i
       if (nickname && country) {
-        players.push({id,nickname, country, ficha});
+        players.push({id,nickname, country, ficha, color});
       }
     }
 

@@ -169,11 +169,41 @@ input[type="text"], textarea {
   font-size: 3rem;
   margin-bottom: 0.5rem;
 }
-#popupConfirm{
+
+.pop{
   display: block;
   font-weight: bold;
   font-size: 18px;
   width: 100% !important;
   border-radius: 50px; 
+}
+
+.properties-select {
+  width: 95%; 
+  margin: 0;
+}
+.popPropiedades{
+  display: flex;
+  gap: 10px;         
+  width: 100%;         
+  flex: 1;
+  display: block;
+  font-weight: bold;
+  font-size: 13px;
+  width: 100% !important;
+  border-radius: 50px; 
+  color: white;            
+}
+#turnoActual{
+  position: absolute; /* lo posiciona relativo a la ventana */
+  top: 5px;          /* distancia desde la parte superior */
+  left: 58%;          /* centrado horizontalmente */
+  transform: translateX(-50%); /* centrar exactamente */
+  font-size: 2rem;  /* tamaño del emoji */
+  z-index: 1050;      /* encima de la mayoría de elementos */
+  pointer-events: none; /* para que no bloquee clicks */
+  border-radius: 50%;  /* opcional, forma circular */
+  padding: 0.3rem 0.6rem; /* opcional, espacio alrededor */
+  color: white;        /* emoji resaltado sobre fondo */
 }
 

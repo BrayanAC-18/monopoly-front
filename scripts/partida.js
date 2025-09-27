@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   //  Crear lista de jugadores desde localStorage
   const playersData = JSON.parse(localStorage.getItem("monopolyPlayers")) || [];
   const jugadores = playersData.map(
-    (p) => new Jugador(p.id, p.nickname, p.country, p.ficha)
+    (p) => new Jugador(p.id, p.nickname, p.country, p.ficha, p.color)
   );
 
   //  Renderizar sidebar
@@ -91,10 +91,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (!contenedor) {
         contenedor = document.createElement("div");
         contenedor.classList.add("jugadores");
-        
+
         // Insertar después del contenedor de emojis
         const emojisContainer = casillaDiv.querySelector(".emojis-container");
-        emojisContainer.insertAdjacentElement('afterend', contenedor);
+        emojisContainer.insertAdjacentElement("afterend", contenedor);
       }
 
       // Añadir ficha (emoji/ícono personalizado del jugador)
@@ -113,30 +113,117 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   //  Evento dados con popup
   let dadosBtn = document.getElementById("dados");
+  // Click normal → turno con dados aleatorios
+
   dadosBtn.addEventListener("click", () => {
     const { jugador, dados } = juego.turno();
+    ejecutarTurno(jugador, dados);
+  });
+
+  // Doble click → turno con dados ingresados manualmente
+  dadosBtn.addEventListener("contextmenu", (e) => {
+    e.preventDefault(); // evitar el menú contextual del navegador
+    let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
+    let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
+
+    if (isNaN(d1) || isNaN(d2) || d1 < 1 || d1 > 6 || d2 < 1 || d2 > 6) {
+      alert("Valores inválidos, deben estar entre 1 y 6.");
+      return;
+    }
+
+    const jugador = juego.getTurnoActual()
+    const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
+
+    ejecutarTurno(jugador, dados);
+  });
+
+  
+
+  function ejecutarTurno(jugador, dados) {
+    // Mostrar emoji del jugador actual en la navbar
+    actualizarEmojiTurno(juego.getTurnoActual());
     juego.moverJugadorActual(dados.sum);
     renderJugadores(juego.getJugadores());
     sidebar.actualizarScore(jugador.getId(), jugador.dinero);
-    juego.siguienteTurno(dados.isDouble);
+
     let posicion = jugador.getPosicion();
     let casillaActual = tablero.obtenerCasilla(posicion);
+
     modal.show(
-      `${jugador.getNombre()} saco ${dados.d1} + ${dados.d2} = ${dados.sum} <br>
-        Cae en la casilla # ${posicion} - ${casillaActual.nombre}`,
+      `<b>${jugador.getNombre()}</b> sacó ${dados.d1} + ${dados.d2} = ${dados.sum} <br>
+        Cae en la casilla #${posicion} - ${casillaActual.nombre}`,
       jugador,
-      () => {}
+      null,
+      null,
+      false,
+      () => {
+        if (casillaActual instanceof Propiedad || casillaActual instanceof Ferrocarril) {
+          manejarCompraOCobro(casillaActual, jugador, dados);
+        } else {
+          juego.siguienteTurno(dados.isDouble);
+          actualizarEmojiTurno(juego.getTurnoActual());
+        }
+      }
     );
-  });
+  }
 
-  //  Tirada manual con doble click
-  dados.addEventListener("dblclick", () => {
-    let valor = parseInt(prompt("Ingresa el valor de los dados (2-12):"));
-    if (isNaN(valor)) return;
+  function manejarCompraOCobro(casilla, jugador, dados) {
+    const dueño = casilla.getDueño();
+    if (dueño && !casilla.getHipotecada()) {
+      // Calcular renta según el tipo de casilla
+      let renta = casilla instanceof Ferrocarril
+        ? casilla.calcularRenta(dueño) // aquí sí pasamos el jugador
+        : casilla.calcularRenta();
 
-    const jugador = juego.getTurnoActual();
-    jugador.mover(valor, tablero);
-    renderJugadores(juego.getJugadores());
-    juego.siguienteTurno();
-  });
+      modal.show(
+        `Esta ${casilla instanceof Ferrocarril ? "ferrocarril" : "propiedad"} pertenece a <b>${dueño.getNombre()}</b>. <br>
+        Debe pagar <b>$${renta}</b>`,
+        jugador,
+        () => {
+          console.log(renta)
+          jugador.pagar(renta);
+          dueño.cobrar(renta)
+          sidebar.actualizarScore(jugador.getId(), jugador.getDinero())
+          juego.siguienteTurno(dados.isDouble);
+          actualizarEmojiTurno(juego.getTurnoActual());
+        },
+        null,
+        false
+      );
+    } else if (!dueño) {
+      modal.show(
+        `<b>${casilla.getNombre()}</b> ${casilla.getColor ? "- " + casilla.getColor() : ""} <br>
+        <b>Valor: $${casilla.getPrecio()}</b> <br>
+        Aún no tiene dueño. ¿Desea adquirirla?`,
+        jugador,
+        () => {
+          const comprado = casilla instanceof Ferrocarril
+            ? jugador.comprarFerro(casilla)
+            : jugador.comprarPropiedad(casilla);
+
+          if (comprado) {
+            sidebar.añadirPropiedad(jugador.getId(), casilla);
+            sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
+          }
+          juego.siguienteTurno(dados.isDouble);
+          actualizarEmojiTurno(juego.getTurnoActual());
+          
+        },
+        () => {
+          juego.siguienteTurno(dados.isDouble);
+          actualizarEmojiTurno(juego.getTurnoActual());
+        },
+        true
+      );
+    } else {
+      juego.siguienteTurno(dados.isDouble);
+      actualizarEmojiTurno(juego.getTurnoActual());
+    }
+  }
+  function actualizarEmojiTurno(jugador) {
+  const turnoDiv = document.getElementById("turnoActual");
+  if (turnoDiv) {
+    turnoDiv.textContent = jugador.getFicha(); // Emoji del jugador
+  }
+}
 });

@@ -68,8 +68,6 @@ export default class Tablero {
   
 
   obtenerCasilla(idCasilla) {
-    console.log(idCasilla)
-    console.log(this.casillas.find(c => c.posicion === idCasilla));
     //devolver casilla mediante su id
     return this.casillas.find(c => c.posicion === idCasilla);
   }
