@@ -68,14 +68,49 @@ export default class Juego {
     );
   }
 
-  finalizarJuego() {
-    const ganador = this.calcularGanador();
-    console.log(
-      "🏆 Ganador:",
-      ganador.jugador.getNombre(),
-      "con",
-      ganador.total
+  async finalizarJuego() {
+  // Calcular puntaje de todos los jugadores
+  const resultados = this.jugadores.map(j => {
+    const valorPropiedades = j.getPropiedades().reduce(
+      (acc, p) => acc + p.getPrecio(),
+      0
     );
-    return ganador;
+    const total = j.getDinero() + valorPropiedades;
+
+    return {
+      nickname: j.getNombre(),
+      score: total,
+      country_code: j.getPais(), // ISO: CO, US, ES...
+    };
+  });
+
+  // Ganador solo para referencia en consola
+  const ganador = resultados.reduce((max, j) => 
+    j.score > max.score ? j : max, resultados[0]
+  );
+
+  console.log("Ganador:", ganador.nickname, "con", ganador.score);
+
+  try {
+    // 👉 Enviar al backend
+    const response = await fetch("http://127.0.0.1/score-recorder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(resultados),
+    });
+
+    if (!response.ok) throw new Error("Error enviando ranking");
+
+    console.log("Ranking guardado en backend ✅");
+
+    // Guardar también local por respaldo
+    localStorage.setItem("rankingActual", JSON.stringify(resultados));
+
+    return { ganador, resultados };
+  } catch (err) {
+    console.error("Error en finalizarJuego:", err);
+    return { ganador, resultados };
   }
+}
+
 }

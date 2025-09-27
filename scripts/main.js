@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const numPlayersInput = document.getElementById("numPlayers");
   const confirmCountBtn = document.getElementById("confirmCountBtn");
   const iniciarPartida = document.getElementById("iniciarPartida");
+  const btnRanking = document.getElementById("btnRankings");
 
   let playerCount = 0;
   const fichas = ["🐸", "🚗", "🚀", "🌻"];
@@ -127,4 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Jugadores guardados. ¡Vamos al tablero!");
     document.location.href = "html/tablero.html"; // Redirigir al tablero
   });
+
+  // Redirigir a ranking
+  btnRanking.addEventListener("click", () => {
+    window.location.href = "html/ranking.html"; // Redirige al HTML de ranking
+    cargarRanking();
+});
 });

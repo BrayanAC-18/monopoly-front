@@ -131,13 +131,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
-    const jugador = juego.getTurnoActual()
+    const jugador = juego.getTurnoActual();
     const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
 
     ejecutarTurno(jugador, dados);
   });
-
-  
 
   function ejecutarTurno(jugador, dados) {
     // Mostrar emoji del jugador actual en la navbar
@@ -150,14 +148,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     let casillaActual = tablero.obtenerCasilla(posicion);
 
     modal.show(
-      `<b>${jugador.getNombre()}</b> sacó ${dados.d1} + ${dados.d2} = ${dados.sum} <br>
+      `<b>${jugador.getNombre()}</b> sacó ${dados.d1} + ${dados.d2} = ${
+        dados.sum
+      } <br>
         Cae en la casilla #${posicion} - ${casillaActual.nombre}`,
       jugador,
       null,
       null,
       false,
       () => {
-        if (casillaActual instanceof Propiedad || casillaActual instanceof Ferrocarril) {
+        if (
+          casillaActual instanceof Propiedad ||
+          casillaActual instanceof Ferrocarril
+        ) {
           manejarCompraOCobro(casillaActual, jugador, dados);
         } else {
           juego.siguienteTurno(dados.isDouble);
@@ -171,19 +174,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     const dueño = casilla.getDueño();
     if (dueño && !casilla.getHipotecada()) {
       // Calcular renta según el tipo de casilla
-      let renta = casilla instanceof Ferrocarril
-        ? casilla.calcularRenta(dueño) // aquí sí pasamos el jugador
-        : casilla.calcularRenta();
+      let renta =
+        casilla instanceof Ferrocarril
+          ? casilla.calcularRenta(dueño) // aquí sí pasamos el jugador
+          : casilla.calcularRenta();
 
       modal.show(
-        `Esta ${casilla instanceof Ferrocarril ? "ferrocarril" : "propiedad"} pertenece a <b>${dueño.getNombre()}</b>. <br>
+        `Esta ${
+          casilla instanceof Ferrocarril ? "ferrocarril" : "propiedad"
+        } pertenece a <b>${dueño.getNombre()}</b>. <br>
         Debe pagar <b>$${renta}</b>`,
         jugador,
         () => {
-          console.log(renta)
+          console.log(renta);
           jugador.pagar(renta);
-          dueño.cobrar(renta)
-          sidebar.actualizarScore(jugador.getId(), jugador.getDinero())
+          dueño.cobrar(renta);
+          sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
         },
@@ -192,24 +198,26 @@ document.addEventListener("DOMContentLoaded", async function () {
       );
     } else if (!dueño) {
       modal.show(
-        `<b>${casilla.getNombre()}</b> ${casilla.getColor ? "- " + casilla.getColor() : ""} <br>
+        `<b>${casilla.getNombre()}</b> ${
+          casilla.getColor ? "- " + casilla.getColor() : ""
+        } <br>
         <b>Valor: $${casilla.getPrecio()}</b> <br>
         Aún no tiene dueño. ¿Desea adquirirla?`,
         jugador,
         () => {
-          const comprado = casilla instanceof Ferrocarril
-            ? jugador.comprarFerro(casilla)
-            : jugador.comprarPropiedad(casilla);
+          const comprado =
+            casilla instanceof Ferrocarril
+              ? jugador.comprarFerro(casilla)
+              : jugador.comprarPropiedad(casilla);
 
           if (comprado) {
             sidebar.añadirPropiedad(jugador.getId(), casilla);
             sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
 
-            casilla.marcarComoDelJugador(jugador)         
-           }
+            casilla.marcarComoDelJugador(jugador);
+          }
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
-          
         },
         () => {
           juego.siguienteTurno(dados.isDouble);
@@ -223,9 +231,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
   function actualizarEmojiTurno(jugador) {
-  const turnoDiv = document.getElementById("turnoActual");
-  if (turnoDiv) {
-    turnoDiv.textContent = jugador.getFicha(); // Emoji del jugador
+    const turnoDiv = document.getElementById("turnoActual");
+    if (turnoDiv) {
+      turnoDiv.textContent = jugador.getFicha(); // Emoji del jugador
+    }
   }
-}
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnFinalizar = document.getElementById("btnFinalizar");
+
+    if (btnFinalizar) {
+      btnFinalizar.addEventListener("click", async () => {
+        const { ganador, resultados } = await juego.finalizarJuego();
+
+        alert(
+          `El juego terminó 🎉 Ganó ${ganador.nickname} con $${ganador.score}`
+        );
+
+        // Redirigir al ranking
+        window.location.href = "html/ranking.html"; // o /html/ranking.html según tu estructura
+      });
+    }
+  });
 });
