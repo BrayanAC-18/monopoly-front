@@ -1,11 +1,11 @@
-import Jugador from "../modals/jugador.js";
-import Juego from "../modals/juego.js";
-import Tablero from "../modals/tablero.js";
-import Sidebar from "../modals/sidebar.js";
-import Propiedad from "../modals/propiedad.js";
 import Especial from "../modals/especial.js";
 import Ferrocarril from "../modals/ferrocarril.js";
+import Juego from "../modals/juego.js";
+import Jugador from "../modals/jugador.js";
 import ModalPopup from "../modals/popup.js";
+import Propiedad from "../modals/propiedad.js";
+import Sidebar from "../modals/sidebar.js";
+import Tablero from "../modals/tablero.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   let tableroHtml = document.getElementById("tablero");
@@ -117,25 +117,61 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   dadosBtn.addEventListener("click", () => {
     const { jugador, dados } = juego.turno();
-    ejecutarTurno(jugador, dados);
+    console.log(jugador);
+    if (!jugador.getEnCarcel()) {
+      ejecutarTurno(jugador, dados);
+    } else {
+      jugadorEnCarcel(jugador);
+    }
   });
 
   // Doble click → turno con dados ingresados manualmente
   dadosBtn.addEventListener("contextmenu", (e) => {
     e.preventDefault(); // evitar el menú contextual del navegador
-    let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
-    let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
-
-    if (isNaN(d1) || isNaN(d2) || d1 < 1 || d1 > 6 || d2 < 1 || d2 > 6) {
-      alert("Valores inválidos, deben estar entre 1 y 6.");
-      return;
-    }
-
     const jugador = juego.getTurnoActual();
-    const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
+    if (!jugador.getEnCarcel()) {
+      let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
+      let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
 
-    ejecutarTurno(jugador, dados);
+      if (isNaN(d1) || isNaN(d2)) {
+        alert("Valores inválidos, deben estar entre 1 y 6.");
+        return;
+      }
+
+      const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
+
+      ejecutarTurno(jugador, dados);
+    } else {
+      jugadorEnCarcel(jugador);
+    }
   });
+
+  function jugadorEnCarcel(jugador) {
+    modal.show(
+      `<b>Estas en carcel.</b> <br>
+      Para seguir jugando debes de pagar <b>$50</b>`,
+      jugador,
+      () => {
+        if (jugador.pagar(50)) {
+          jugador.setEnCarcel(false);
+          sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
+        } else {
+          alert(
+            "Parece que no tienes suficiente dinero para salir de carcel 🙈"
+          );
+          juego.siguienteTurno();
+          actualizarEmojiTurno(juego.getTurnoActual());
+        }
+      },
+      () => {
+        juego.siguienteTurno();
+        actualizarEmojiTurno(juego.getTurnoActual());
+      },
+      true,
+      null,
+      {}
+    );
+  }
 
   function ejecutarTurno(jugador, dados) {
     // Mostrar emoji del jugador actual en la navbar
@@ -190,6 +226,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           jugador.pagar(renta);
           dueño.cobrar(renta);
           sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
+          sidebar.actualizarScore(dueño.getId(), dueño.getDinero());
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
         },
@@ -211,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async function () {
               : jugador.comprarPropiedad(casilla);
 
           if (comprado) {
-            sidebar.añadirPropiedad(jugador.getId(), casilla);
+            sidebar.añadirPropiedad(jugador.getId(), casilla, tablero);
             sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
 
             casilla.marcarComoDelJugador(jugador);
