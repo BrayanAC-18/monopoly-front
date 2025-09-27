@@ -1,5 +1,6 @@
 import ModalPopup from "../modals/popup.js";
 import Ferrocarril from "../modals/ferrocarril.js";
+import Juego from "../modals/juego.js";
 export default class Sidebar {
   constructor(desktopContainer, mobileContainer, jugadores) {
     this.desktop = desktopContainer;
@@ -37,7 +38,7 @@ export default class Sidebar {
     });
   }
 
-  añadirPropiedad(playerId, propiedad, tablero) {
+  añadirPropiedad(playerId, propiedad, tablero,juego) {
     const cards = document.querySelectorAll(`[data-player="${playerId}"]`);
     if (!cards.length) return;
 
@@ -55,7 +56,7 @@ export default class Sidebar {
             const p = option.propiedadObj;
             const jugador = this.jugadores.find((j) => j.getId() === playerId);
 
-            this.mostrarModalPropiedad(jugador, p, tablero);
+            this.mostrarModalPropiedad(jugador, p, tablero, juego);
           }
           e.target.selectedIndex = 0;
         });
@@ -90,8 +91,11 @@ export default class Sidebar {
     }
   }
 
-  mostrarModalPropiedad(jugador, propiedad, tablero) {
+  mostrarModalPropiedad(jugador, propiedad, tablero,juego) {
     const modal = new ModalPopup();
+
+    // Solo habilitar botones si es el turno del jugador
+    const esTurnoJugador = jugador === juego.getTurnoActual();
 
     const generarContenido = () => {
       const renta =
@@ -129,7 +133,7 @@ export default class Sidebar {
       modal.actualizarContenido(generarContenido());
       this.actualizarScore(jugador.getId(), jugador.getDinero());
 
-      if (propiedad instanceof Ferrocarril) {
+      if (propiedad instanceof Ferrocarril || !esTurnoJugador) {
         modal.comprarCasa.hidden = true;
       } else {
         modal.comprarCasa.hidden = !propiedad.puedeConstruir(tablero);
@@ -138,17 +142,20 @@ export default class Sidebar {
             ? "Comprar Casa ($100)"
             : "Comprar Hotel($250)";
       }
+      
       // Actualizar texto y visibilidad del botón hipotecar/deshipotecar
-      if (propiedad.getHipotecada()) {
-        modal.hipotecar.textContent = "Deshipotecar";
+      if (esTurnoJugador) {
+      modal.hipotecar.hidden = false;
+      modal.hipotecar.textContent = propiedad.getHipotecada() ? "Deshipotecar" : "Hipotecar";
       } else {
-        modal.hipotecar.textContent = "Hipotecar";
+        modal.hipotecar.hidden = true;
       }
-    };
+  };
 
     // Mostrar modal la primera vez
     modal.show(generarContenido(), jugador, null, null, false, null, {
       onHipotecar: () => {
+
         if (propiedad.getHipotecada()) {
           jugador.deshipotecar(propiedad);
         } else {

@@ -17,6 +17,9 @@ export default class Ferrocarril extends Casilla {
     return renta
   }
 
+  
+
+
   hipotecar() {
     if (!this.hipotecada) {
       this.hipotecada = true;
