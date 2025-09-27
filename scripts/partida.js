@@ -237,20 +237,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const btnFinalizar = document.getElementById("btnFinalizar");
-
-    if (btnFinalizar) {
-      btnFinalizar.addEventListener("click", async () => {
-        const { ganador, resultados } = await juego.finalizarJuego();
-
-        alert(
-          `El juego terminó 🎉 Ganó ${ganador.nickname} con $${ganador.score}`
-        );
-
-        // Redirigir al ranking
-        window.location.href = "html/ranking.html"; // o /html/ranking.html según tu estructura
-      });
-    }
-  });
+  btnFinalizar.addEventListener("click", async () => {
+  const { ganador, resultados } = await juego.finalizarJuego();
+  alert(`El juego terminó 🎉 Ganó ${ganador.nick} con $${ganador.score}`);
+});
 });
