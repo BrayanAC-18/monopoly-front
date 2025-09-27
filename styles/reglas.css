@@ -1,0 +1,67 @@
+/* Estilo general */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Encabezado */
+.header {
+  background: linear-gradient(135deg, #e70a0a, #020203);
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* Secciones */
+.intro p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.intro ul {
+  list-style: disc;
+  padding-left: 2rem;
+  margin-bottom: 2rem;
+}
+
+.reglas h2 {
+  color: #e50d0d;
+  margin-bottom: 1rem;
+}
+
+.reglas ol {
+  padding-left: 2rem;
+}
+
+.reglas li {
+  margin-bottom: 0.8rem;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background: #e9ecef;
+  margin-top: 2rem;
+  border-top: 1px solid #ccc;
+}
