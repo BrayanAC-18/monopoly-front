@@ -69,7 +69,7 @@ export default class Sidebar {
               const modal = new ModalPopup(true)
 
               modal.show( //mensaje
-                `<b>Informacion de propieda</b> <br> 
+                `<b>Informacion de propiedad</b> <br> 
                 <b>Nombre:</b> ${p.getNombre()} <br> 
                 <b>Renta:</b> $${renta} <br> 
                 <b>Color:</b> ${p.getColor?p.getColor():"N/A"} <br> 

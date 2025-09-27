@@ -13,25 +13,24 @@ export default class Propiedad extends Casilla {
     this.mortgage = mortgage; // Valor de hipoteca
   }
 
-
   //  Renta dinámica
   calcularRenta() {
     if (this.hotel) return this.renta.hotel;
     if (this.casas > 0) return this.renta.casas[this.casas - 1];
     return this.renta.base;
   }
-  getMortgage(){
+  getMortgage() {
     return this.mortgage;
   }
 
-  getColor(){
-    return this.color
+  getColor() {
+    return this.color;
   }
-  getPrecio(){
-    return this.precio
+  getPrecio() {
+    return this.precio;
   }
-  getHipotecada(){
-    return this.hipotecada
+  getHipotecada() {
+    return this.hipotecada;
   }
 
   // 🔑 Dueño
@@ -48,6 +47,7 @@ export default class Propiedad extends Casilla {
   hipotecar() {
     if (!this.hipotecada) {
       this.hipotecada = true;
+      
       return this.mortgage;
     }
     return 0;
@@ -65,6 +65,65 @@ export default class Propiedad extends Casilla {
     return 0;
   }
 
+  //marcar como comprada
+  marcarComoDelJugador(jugador) {
+    const casillaDiv = document.getElementById(`casilla-${this.posicion}`);
+    if (!casillaDiv) return;
+
+    // quitar colores de grupo que vienen del backend
+    casillaDiv.classList.remove(
+      "brown",
+      "purple",
+      "pink",
+      "orange",
+      "red",
+      "yellow",
+      "green",
+      "blue"
+    );
+
+    // quitar posibles colores de jugadores anteriores
+    casillaDiv.classList.remove(
+      "propietario-verde",
+      "propietario-rojo",
+      "propietario-azul",
+      "propietario-amarillo"
+    );
+
+    // añadir clase según el color del jugador
+    casillaDiv.classList.add(`propietario-${jugador.color}`);
+  }
+
+  marcarComoHipotecada() {
+    const casillaDiv = document.getElementById(`casilla-${this.posicion}`);
+    if (!casillaDiv) return;
+
+    casillaDiv.classList.remove(
+      "brown",
+      "purple",
+      "pink",
+      "orange",
+      "red",
+      "yellow",
+      "green",
+      "blue",
+      "propietario-verde",
+      "propietario-rojo",
+      "propietario-azul",
+      "propietario-amarillo"
+    );
+
+    casillaDiv.classList.add("hipotecada");
+  }
+
+  marcarComoDeshipotecada(jugador) {
+    const casillaDiv = document.getElementById(`casilla-${this.posicion}`);
+    if (!casillaDiv) return;
+
+    casillaDiv.classList.remove("hipotecada");
+    casillaDiv.classList.add(`propietario-${jugador.color}`);
+  }
+
   //  Construcciones
   puedeConstruir(tablero) {
     if (!this.dueño) return false;
@@ -77,9 +136,9 @@ export default class Propiedad extends Casilla {
 
   construirCasa(tablero) {
     if (this.puedeConstruir(tablero) && this.casas < 4 && !this.hotel) {
-      const costo = 100
+      const costo = 100;
       if (this.dueño.cash >= costo) {
-        this.dueño.pagar(costo)
+        this.dueño.pagar(costo);
         this.casas++;
         return true;
       }
@@ -91,7 +150,7 @@ export default class Propiedad extends Casilla {
     if (this.puedeConstruir(juego) && this.casas === 4 && !this.hotel) {
       const costo = 250;
       if (this.dueño.cash >= costo) {
-        this.dueño.pagar(costo)
+        this.dueño.pagar(costo);
         this.casas = 0;
         this.hotel = true;
         return true;

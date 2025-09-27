@@ -204,7 +204,9 @@ document.addEventListener("DOMContentLoaded", async function () {
           if (comprado) {
             sidebar.añadirPropiedad(jugador.getId(), casilla);
             sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
-          }
+
+            casilla.marcarComoDelJugador(jugador)         
+           }
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
           
