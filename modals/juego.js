@@ -31,8 +31,10 @@ export default class Juego {
   //  Mover al jugador actual según pasos
   moverJugadorActual(pasos) {
     const jugador = this.jugadores[this.turnoActual];
-    jugador.mover(pasos, this.tablero);
-    return jugador; // devuelve al jugador que se movió
+    if (!jugador.enCarcel){
+      jugador.mover(pasos, this.tablero);
+      return jugador; // devuelve al jugador que se movió
+    }
   }
 
   //  Cambiar de turno (si no sacó dobles)

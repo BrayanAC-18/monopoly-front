@@ -15,8 +15,8 @@ export default class Propiedad extends Casilla {
 
   //  Renta dinámica
   calcularRenta() {
-    if (this.hotel) return this.renta.hotel;
-    if (this.casas > 0) return this.renta.casas[this.casas - 1];
+    if (this.hotel) return this.renta.withHotel;
+    if (this.casas > 0) return this.renta.withHouse[this.casas - 1];
     return this.renta.base;
   }
   getMortgage() {
@@ -137,13 +137,17 @@ export default class Propiedad extends Casilla {
   construirCasa(tablero) {
     if (this.puedeConstruir(tablero) && this.casas < 4 && !this.hotel) {
       const costo = 100;
-      if (this.dueño.cash >= costo) {
+      if (this.dueño.getDinero() >= costo) {
         this.dueño.pagar(costo);
         this.casas++;
         return true;
       }
     }
     return false;
+  }
+
+  getCasas(){
+    return this.casas
   }
 
   construirHotel(juego) {
@@ -157,6 +161,9 @@ export default class Propiedad extends Casilla {
       }
     }
     return false;
+  }
+  getHotel(){
+    return this.hotel?"1":"0"
   }
 
   //  Para sidebar

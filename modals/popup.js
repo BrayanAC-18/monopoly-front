@@ -95,4 +95,7 @@ export default class ModalPopup {
 
     this.modal.show();
   }
+  actualizarContenido(nuevoMensaje) {
+    this.messageElement.innerHTML = nuevoMensaje;
+  }
 }
