@@ -47,7 +47,7 @@ export default class Propiedad extends Casilla {
   hipotecar() {
     if (!this.hipotecada) {
       this.hipotecada = true;
-      
+      this.marcarComoHipotecada();
       return this.mortgage;
     }
     return 0;
@@ -56,9 +56,9 @@ export default class Propiedad extends Casilla {
   deshipotecar() {
     if (this.hipotecada) {
       const costo = Math.floor(this.mortgage * 1.1); // +10% interés
-      if (this.dueño.cash >= costo) {
-        this.dueño.cash -= costo;
+      if (this.dueño.getDinero() >= costo) {
         this.hipotecada = false;
+        this.marcarComoDeshipotecada();
         return costo;
       }
     }
@@ -91,7 +91,7 @@ export default class Propiedad extends Casilla {
     );
 
     // añadir clase según el color del jugador
-    casillaDiv.classList.add(`propietario-${jugador.color}`);
+    casillaDiv.classList.add(`propietario-${jugador.getColor()}`);
   }
 
   marcarComoHipotecada() {
@@ -116,12 +116,12 @@ export default class Propiedad extends Casilla {
     casillaDiv.classList.add("hipotecada");
   }
 
-  marcarComoDeshipotecada(jugador) {
+  marcarComoDeshipotecada() {
     const casillaDiv = document.getElementById(`casilla-${this.posicion}`);
     if (!casillaDiv) return;
 
     casillaDiv.classList.remove("hipotecada");
-    casillaDiv.classList.add(`propietario-${jugador.color}`);
+    casillaDiv.classList.add(`propietario-${this.dueño.getColor()}`);
   }
 
   //  Construcciones
@@ -153,7 +153,7 @@ export default class Propiedad extends Casilla {
   construirHotel(juego) {
     if (this.puedeConstruir(juego) && this.casas === 4 && !this.hotel) {
       const costo = 250;
-      if (this.dueño.cash >= costo) {
+      if (this.dueño.getDinero() >= costo) {
         this.dueño.pagar(costo);
         this.casas = 0;
         this.hotel = true;

@@ -13,7 +13,7 @@ export default class ModalPopup {
     // Instancia de Bootstrap Modal
     this.modal = new bootstrap.Modal(this.modalElement, {
       backdrop: "static",
-      keyboard: false
+      keyboard: false,
     });
 
     this.onHiddenCallback = null;

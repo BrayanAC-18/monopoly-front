@@ -134,11 +134,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     e.preventDefault(); // evitar el menú contextual del navegador
     const jugador = juego.getTurnoActual();
     if (!jugador.getEnCarcel()) {
-      let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
-      let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
+      let d1 = parseInt(prompt("Ingresa el valor del primer dado:"), 10);
+      let d2 = parseInt(prompt("Ingresa el valor del segundo dado:"), 10);
 
       if (isNaN(d1) || isNaN(d2)) {
-        alert("Valores inválidos, deben estar entre 1 y 6.");
+        alert("Ingrese valores inválidos.");
         return;
       }
 
@@ -223,11 +223,25 @@ document.addEventListener("DOMContentLoaded", async function () {
           ? casilla.calcularRenta(dueño) // aquí sí pasamos el jugador
           : casilla.calcularRenta();
 
-      modal.show(
-        `Esta ${
+      let infoPropiedades = "";
+      if (casilla instanceof Ferrocarril) {
+        const numFerros = dueño.numeroDeFerros();
+        infoPropiedades = `${numFerros} ferrocarril(es) 🚂`;
+      } else {
+        const numCasas = casilla.getCasas();
+        const numHoteles = casilla.getHotel();
+        infoPropiedades = `${numCasas} casas 🏠, ${numHoteles} hoteles 🏢`;
+      }
+
+      const mensaje = `
+        Esta ${
           casilla instanceof Ferrocarril ? "ferrocarril" : "propiedad"
-        } pertenece a <b>${dueño.getNombre()}</b>. <br>
-        Debe pagar <b>$${renta}</b>`,
+        } pertenece a <b>${dueño.getNombre()}</b>.<br>
+        Debe pagar <b>$${renta}</b>.<br>
+        <b>Propiedades del dueño:</b> ${infoPropiedades}.`;
+
+      modal.show(
+        mensaje,
         jugador,
         () => {
           console.log(renta);
@@ -256,7 +270,7 @@ document.addEventListener("DOMContentLoaded", async function () {
               : jugador.comprarPropiedad(casilla);
 
           if (comprado) {
-            sidebar.añadirPropiedad(jugador.getId(), casilla, tablero);
+            sidebar.añadirPropiedad(jugador.getId(), casilla, tablero, juego);
             sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
 
             casilla.marcarComoDelJugador(jugador);
@@ -281,4 +295,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       turnoDiv.textContent = jugador.getFicha(); // Emoji del jugador
     }
   }
+
+  btnFinalizar.addEventListener("click", async () => {
+    const { ganador, resultados } = await juego.finalizarJuego();
+    alert(`El juego terminó 🎉 Ganó ${ganador.nickname} con $${ganador.score}`);
+    window.location.href = "../html/ranking.html"; // Redirige a ranking.html
+  });
 });

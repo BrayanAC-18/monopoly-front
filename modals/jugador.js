@@ -1,4 +1,4 @@
-import Sidebar from "../modals/sidebar.js";
+import Ferrocarril from "../modals/ferrocarril.js";
 export default class Jugador {
   constructor(id, nombre, pais, ficha, color) {
     this.id = id;
@@ -10,6 +10,10 @@ export default class Jugador {
     this.propiedades = [];
     this.enCarcel = false;
     this.posicion = 0;
+  }
+
+  numeroDeFerros(){
+    return this.propiedades.filter((p) => p instanceof Ferrocarril).length;
   }
 
   mover(pasos, tablero) {
@@ -78,7 +82,6 @@ export default class Jugador {
       const dineroRecibido = propiedad.hipotecar();
       if (dineroRecibido > 0){
         this.cobrar(dineroRecibido);
-        propiedad.marcarComoHipotecada();
       }
     }
   }
@@ -87,7 +90,6 @@ export default class Jugador {
     if (this.propiedades.includes(propiedad)) {
       const costo = propiedad.deshipotecar();
       this.pagar(costo);
-      propiedad.marcarComoDeshipotecada();
     }
   }
 
@@ -106,8 +108,10 @@ export default class Jugador {
 
   getId() { return this.id; }
   getNombre() { return this.nombre; }
+  getScore(){return this.getScore}
   getPais() { return this.pais; }
   getFicha() { return this.ficha; }
+  getColor() {return this.color}
   getPosicion() { return this.posicion; }
   setPosicion(casillaId) { this.posicion = casillaId; }
 }

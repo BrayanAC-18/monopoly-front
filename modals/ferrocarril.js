@@ -17,6 +17,30 @@ export default class Ferrocarril extends Casilla {
     return renta
   }
 
+  
+
+
+  hipotecar() {
+    if (!this.hipotecada) {
+      this.hipotecada = true;
+      this.marcarComoHipotecada();
+      return this.mortgage;
+    }
+    return 0;
+  }
+
+  deshipotecar() {
+    if (this.hipotecada) {
+      const costo = Math.floor(this.mortgage * 1.1); // +10% interés
+      if (this.dueño.getDinero() >= costo) {
+        this.hipotecada = false;
+        this.marcarComoDeshipotecada();
+        return costo;
+      }
+    }
+    return 0;
+  }
+
   getMortgage() {
     return this.mortgage;
   }
@@ -59,7 +83,7 @@ export default class Ferrocarril extends Casilla {
     );
 
     // añadir clase según el color del jugador
-    casillaDiv.classList.add(`propietario-${jugador.color}`);
+    casillaDiv.classList.add(`propietario-${jugador.getColor()}`);
   }
 
   marcarComoHipotecada() {
@@ -84,11 +108,11 @@ export default class Ferrocarril extends Casilla {
     casillaDiv.classList.add("hipotecada");
   }
 
-  marcarComoDeshipotecada(jugador) {
+  marcarComoDeshipotecada() {
     const casillaDiv = document.getElementById(`casilla-${this.posicion}`);
     if (!casillaDiv) return;
 
     casillaDiv.classList.remove("hipotecada");
-    casillaDiv.classList.add(`propietario-${jugador.color}`);
+    casillaDiv.classList.add(`propietario-${this.dueño.getColor()}`);
   }
 }
