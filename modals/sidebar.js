@@ -1,5 +1,5 @@
-import Ferrocarril from "../modals/ferrocarril.js";
 import ModalPopup from "../modals/popup.js";
+import Ferrocarril from "../modals/ferrocarril.js";
 export default class Sidebar {
   constructor(desktopContainer, mobileContainer, jugadores) {
     this.desktop = desktopContainer;
@@ -30,19 +30,18 @@ export default class Sidebar {
   }
 
   actualizarScore(playerId, newScore) {
-    const cards = document.querySelectorAll(`[data-player="${playerId}"]`); //modificar tanto para desktop como para movil
+    const cards = document.querySelectorAll(`[data-player="${playerId}"]`);
     cards.forEach((card) => {
       const scoreEl = card.querySelector(".score");
       if (scoreEl) scoreEl.textContent = newScore;
     });
   }
 
-  añadirPropiedad(playerId, propiedad) {
+  añadirPropiedad(playerId, propiedad, tablero) {
     const cards = document.querySelectorAll(`[data-player="${playerId}"]`);
     if (!cards.length) return;
 
     cards.forEach((card) => {
-      // Buscar o crear el select de propiedades
       let select = card.querySelector("select.properties-select");
       if (!select) {
         select = document.createElement("select");
@@ -50,53 +49,83 @@ export default class Sidebar {
         select.innerHTML = `<option disabled selected>Propiedades</option>`;
         card.appendChild(select);
 
-        // Evento al cambiar la selección
         select.addEventListener("change", (e) => {
           const option = e.target.options[e.target.selectedIndex];
           if (option && option.propiedadObj) {
             const p = option.propiedadObj;
-            const jugador = this.jugadores.find(
-                (j) => j.getId() === playerId
-              );
-            // Diferenciar Propiedad y Ferrocarril
-            let renta = 0;
-            if (p instanceof Ferrocarril) {
-              
-              renta = p.calcularRenta(jugador);
-            } else {
-              renta = p.calcularRenta();
-            }
-              const modal = new ModalPopup(true)
+            const jugador = this.jugadores.find((j) => j.getId() === playerId);
 
-              modal.show( //mensaje
-                `<b>Informacion de propieda</b> <br> 
-                <b>Nombre:</b> ${p.getNombre()} <br> 
-                <b>Renta:</b> $${renta} <br> 
-                <b>Color:</b> ${p.getColor?p.getColor():"N/A"} <br> 
-                <b>Mortgage:</b> ${p.getMortgage()} <br> 
-                <b>Hipotecada:</b> ${p.getHipotecada()?"Sí":"No"}`, 
-                jugador,null,null,false,null, 
-                {
-                onHipotecar: () => {
-                  jugador.hipotecar(p);
-                  this.actualizarScore(jugador.getId(), jugador.getDinero());
-                },
-                onComprarCasa: () => {
-                  //implementar
-                }
-              });
+            this.mostrarModalPropiedad(jugador, p, tablero);
           }
-
-          e.target.selectedIndex = 0; // volver al placeholder
+          e.target.selectedIndex = 0;
         });
       }
 
-      // Crear la opción para la propiedad
       const option = document.createElement("option");
       option.textContent = propiedad.getNombre();
       option.propiedadObj = propiedad;
-
       select.appendChild(option);
     });
   }
+
+  // Nueva función para manejar la compra de casa y actualizar información
+  comprarCasa(jugador, propiedad, tablero) {
+    const exito = propiedad.construirCasa(tablero);
+    if (exito) {
+      this.actualizarScore(jugador.getId(), jugador.getDinero());
+      return true;
+    } else {
+      alert("No tienes suficiente dinero para construir la casa");
+      return false;
+    }
+  }
+
+  mostrarModalPropiedad(jugador, propiedad, tablero) {
+  const modal = new ModalPopup();
+
+  // Función única para crear el contenido del modal
+  const generarContenido = () => {
+    const renta = propiedad instanceof Ferrocarril
+      ? propiedad.calcularRenta(jugador)
+      : propiedad.calcularRenta();
+
+    const nombre = propiedad.getNombre?.() ?? "N/A";
+    const color = propiedad.getColor?.() ?? "N/A";
+    const mortgage = propiedad.getMortgage?.() ?? 0;
+    const hipotecada = propiedad.getHipotecada?.() ? "Sí" : "No";
+    const casas = propiedad.getCasas?.() ?? 0;
+    const hotel = propiedad.getHotel?.() ?? 0;
+    const dinero = jugador.getDinero?.() ?? 0;
+
+    return `
+      <b>Jugador:</b> ${jugador.getNombre()} 💰 $${dinero} <br>
+      <b>Propiedad:</b> ${nombre} <br> 
+      <b>Renta:</b> $${renta ?? 0} <br> 
+      <b>Color:</b> ${color} <br> 
+      <b>Mortgage:</b> ${mortgage} <br> 
+      <b>Hipotecada:</b> ${hipotecada} <br>
+      <b>🏠 Casas($100):</b> ${casas}    <b>🏢 Hotel($250):</b> ${hotel}
+    `;
+  };
+
+  // Función única que actualiza el modal
+  const actualizarModal = () => {
+    modal.actualizarContenido(generarContenido());
+    this.actualizarScore(jugador.getId(), jugador.getDinero());
+  };
+
+  // Mostramos el modal la primera vez
+  modal.show(generarContenido(), jugador, null, null, false, null, {
+    onHipotecar: () => {
+      jugador.hipotecar(propiedad);
+      actualizarModal();
+    },
+    onComprarCasa: propiedad.puedeConstruir(tablero)
+      ? () => {
+          const exito = this.comprarCasa(jugador, propiedad, tablero);
+          if (exito) actualizarModal();
+        }
+      : null
+  });
+}
 }

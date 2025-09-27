@@ -78,6 +78,7 @@ export default class Jugador {
       const dineroRecibido = propiedad.hipotecar();
       if (dineroRecibido > 0){
         this.cobrar(dineroRecibido);
+        propiedad.marcarComoHipotecada();
       }
     }
   }
@@ -86,6 +87,7 @@ export default class Jugador {
     if (this.propiedades.includes(propiedad)) {
       const costo = propiedad.deshipotecar();
       this.pagar(costo);
+      propiedad.marcarComoDeshipotecada();
     }
   }
 

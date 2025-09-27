@@ -1,11 +1,11 @@
-import Jugador from "../modals/jugador.js";
-import Juego from "../modals/juego.js";
-import Tablero from "../modals/tablero.js";
-import Sidebar from "../modals/sidebar.js";
-import Propiedad from "../modals/propiedad.js";
 import Especial from "../modals/especial.js";
 import Ferrocarril from "../modals/ferrocarril.js";
+import Juego from "../modals/juego.js";
+import Jugador from "../modals/jugador.js";
 import ModalPopup from "../modals/popup.js";
+import Propiedad from "../modals/propiedad.js";
+import Sidebar from "../modals/sidebar.js";
+import Tablero from "../modals/tablero.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   let tableroHtml = document.getElementById("tablero");
@@ -117,57 +117,60 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   dadosBtn.addEventListener("click", () => {
     const { jugador, dados } = juego.turno();
-    console.log(jugador)
-    if (!jugador.getEnCarcel()){
+    console.log(jugador);
+    if (!jugador.getEnCarcel()) {
       ejecutarTurno(jugador, dados);
+    } else {
+      jugadorEnCarcel(jugador);
     }
-    else{
-      jugadorEnCarcel(jugador)
-    }  
   });
 
   // Doble click → turno con dados ingresados manualmente
   dadosBtn.addEventListener("contextmenu", (e) => {
     e.preventDefault(); // evitar el menú contextual del navegador
-    const jugador = juego.getTurnoActual()
-    if (!jugador.getEnCarcel()){
+    const jugador = juego.getTurnoActual();
+    if (!jugador.getEnCarcel()) {
       let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
       let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
 
-      if (isNaN(d1) || isNaN(d2) || d1 < 1 || d1 > 6 || d2 < 1 || d2 > 6) {
+      if (isNaN(d1) || isNaN(d2)) {
         alert("Valores inválidos, deben estar entre 1 y 6.");
         return;
       }
 
-    
       const dados = { d1, d2, sum: d1 + d2, isDouble: d1 === d2 };
 
       ejecutarTurno(jugador, dados);
+    } else {
+      jugadorEnCarcel(jugador);
     }
-    else{
-      jugadorEnCarcel(jugador)
-    }
-
   });
 
-  function jugadorEnCarcel(jugador){
+  function jugadorEnCarcel(jugador) {
     modal.show(
       `<b>Estas en carcel.</b> <br>
-      Para seguir jugando debes de pagar <b>$50</b>`,jugador,
+      Para seguir jugando debes de pagar <b>$50</b>`,
+      jugador,
       () => {
-        if (jugador.pagar(50)){
-          jugador.setEnCarcel(false)
-          sidebar.actualizarScore(jugador.getId(),jugador.getDinero())
+        if (jugador.pagar(50)) {
+          jugador.setEnCarcel(false);
+          sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
+        } else {
+          alert(
+            "Parece que no tienes suficiente dinero para salir de carcel 🙈"
+          );
+          juego.siguienteTurno();
+          actualizarEmojiTurno(juego.getTurnoActual());
         }
-        else{
-        alert("Parece que no tienes suficiente dinero para salir de carcel 🙈")
-        juego.siguienteTurno();
-        actualizarEmojiTurno(juego.getTurnoActual());}
       },
-      () =>{
+      () => {
         juego.siguienteTurno();
         actualizarEmojiTurno(juego.getTurnoActual());
-      },true,null,{})
+      },
+      true,
+      null,
+      {}
+    );
   }
 
   function ejecutarTurno(jugador, dados) {
@@ -181,14 +184,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     let casillaActual = tablero.obtenerCasilla(posicion);
 
     modal.show(
-      `<b>${jugador.getNombre()}</b> sacó ${dados.d1} + ${dados.d2} = ${dados.sum} <br>
+      `<b>${jugador.getNombre()}</b> sacó ${dados.d1} + ${dados.d2} = ${
+        dados.sum
+      } <br>
         Cae en la casilla #${posicion} - ${casillaActual.nombre}`,
       jugador,
       null,
       null,
       false,
       () => {
-        if (casillaActual instanceof Propiedad || casillaActual instanceof Ferrocarril) {
+        if (
+          casillaActual instanceof Propiedad ||
+          casillaActual instanceof Ferrocarril
+        ) {
           manejarCompraOCobro(casillaActual, jugador, dados);
         } else {
           juego.siguienteTurno(dados.isDouble);
@@ -202,20 +210,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     const dueño = casilla.getDueño();
     if (dueño && !casilla.getHipotecada()) {
       // Calcular renta según el tipo de casilla
-      let renta = casilla instanceof Ferrocarril
-        ? casilla.calcularRenta(dueño) // aquí sí pasamos el jugador
-        : casilla.calcularRenta();
+      let renta =
+        casilla instanceof Ferrocarril
+          ? casilla.calcularRenta(dueño) // aquí sí pasamos el jugador
+          : casilla.calcularRenta();
 
       modal.show(
-        `Esta ${casilla instanceof Ferrocarril ? "ferrocarril" : "propiedad"} pertenece a <b>${dueño.getNombre()}</b>. <br>
+        `Esta ${
+          casilla instanceof Ferrocarril ? "ferrocarril" : "propiedad"
+        } pertenece a <b>${dueño.getNombre()}</b>. <br>
         Debe pagar <b>$${renta}</b>`,
         jugador,
         () => {
-          console.log(renta)
+          console.log(renta);
           jugador.pagar(renta);
-          dueño.cobrar(renta)
-          sidebar.actualizarScore(jugador.getId(), jugador.getDinero())
-          sidebar.actualizarScore(dueño.getId(), dueño.getDinero())
+          dueño.cobrar(renta);
+          sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
+          sidebar.actualizarScore(dueño.getId(), dueño.getDinero());
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
         },
@@ -224,22 +235,26 @@ document.addEventListener("DOMContentLoaded", async function () {
       );
     } else if (!dueño) {
       modal.show(
-        `<b>${casilla.getNombre()}</b> ${casilla.getColor ? "- " + casilla.getColor() : ""} <br>
+        `<b>${casilla.getNombre()}</b> ${
+          casilla.getColor ? "- " + casilla.getColor() : ""
+        } <br>
         <b>Valor: $${casilla.getPrecio()}</b> <br>
         Aún no tiene dueño. ¿Desea adquirirla?`,
         jugador,
         () => {
-          const comprado = casilla instanceof Ferrocarril
-            ? jugador.comprarFerro(casilla)
-            : jugador.comprarPropiedad(casilla);
+          const comprado =
+            casilla instanceof Ferrocarril
+              ? jugador.comprarFerro(casilla)
+              : jugador.comprarPropiedad(casilla);
 
           if (comprado) {
-            sidebar.añadirPropiedad(jugador.getId(), casilla);
+            sidebar.añadirPropiedad(jugador.getId(), casilla, tablero);
             sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
+
+            casilla.marcarComoDelJugador(jugador);
           }
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
-          
         },
         () => {
           juego.siguienteTurno(dados.isDouble);
@@ -253,9 +268,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
   function actualizarEmojiTurno(jugador) {
-  const turnoDiv = document.getElementById("turnoActual");
-  if (turnoDiv) {
-    turnoDiv.textContent = jugador.getFicha(); // Emoji del jugador
+    const turnoDiv = document.getElementById("turnoActual");
+    if (turnoDiv) {
+      turnoDiv.textContent = jugador.getFicha(); // Emoji del jugador
+    }
   }
-}
 });

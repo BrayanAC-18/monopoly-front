@@ -149,14 +149,6 @@ input[type="text"], textarea {
   cursor: url("../assets/cursores/click.cur"), pointer;
 }
 
-/* Barrita superior de estado */
-.estado-bar {
-  width: 100%;
-  height: 6px;
-  background: black; /* disponible */
-  margin-bottom: 2px;
-}
-
 .jugadores {
   display: flex;
   gap: 1px;
@@ -206,4 +198,35 @@ input[type="text"], textarea {
   padding: 0.3rem 0.6rem; /* opcional, espacio alrededor */
   color: white;        /* emoji resaltado sobre fondo */
 }
+
+.propietario-verde {
+  background-color: rgba(0, 128, 0, 0.7) !important;
+  border: 2px solid #004d00;
+}
+
+.propietario-rojo {
+  background-color: rgba(255, 0, 0, 0.7) !important;
+  border: 2px solid #800000;
+}
+
+.propietario-azul {
+  background-color: rgba(0, 0, 255, 0.7) !important;
+  border: 2px solid #000080;
+}
+
+.propietario-amarillo {
+  background-color: rgba(241, 241, 25, 0.7) !important;
+  border: 2px solid #b3b300;
+}
+
+.hipotecada {
+  background-color: #888 !important;   /* gris neutro */
+  border: 2px dashed #333;             /* borde punteado */
+  color: #fff;                         /* texto blanco para contraste */
+  opacity: 0.8;
+}
+
+
+
+
 
