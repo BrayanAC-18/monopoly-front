@@ -75,57 +75,102 @@ export default class Sidebar {
       this.actualizarScore(jugador.getId(), jugador.getDinero());
       return true;
     } else {
-      alert("No tienes suficiente dinero para construir la casa");
+      alert("No puedes hacer esto");
+      return false;
+    }
+  }
+  comprarHotel(jugador, propiedad, tablero) {
+    const exito = propiedad.construirHotel(tablero);
+    if (exito) {
+      this.actualizarScore(jugador.getId(), jugador.getDinero());
+      return true;
+    } else {
+      alert("No puedes hacer esto");
       return false;
     }
   }
 
   mostrarModalPropiedad(jugador, propiedad, tablero) {
-  const modal = new ModalPopup();
+    const modal = new ModalPopup();
 
-  // Función única para crear el contenido del modal
-  const generarContenido = () => {
-    const renta = propiedad instanceof Ferrocarril
-      ? propiedad.calcularRenta(jugador)
-      : propiedad.calcularRenta();
+    const generarContenido = () => {
+      const renta =
+        propiedad instanceof Ferrocarril
+          ? propiedad.calcularRenta(jugador)
+          : propiedad.calcularRenta();
 
-    const nombre = propiedad.getNombre?.() ?? "N/A";
-    const color = propiedad.getColor?.() ?? "N/A";
-    const mortgage = propiedad.getMortgage?.() ?? 0;
-    const hipotecada = propiedad.getHipotecada?.() ? "Sí" : "No";
-    const casas = propiedad.getCasas?.() ?? 0;
-    const hotel = propiedad.getHotel?.() ?? 0;
-    const dinero = jugador.getDinero?.() ?? 0;
+      const nombre = propiedad.getNombre?.() ?? "N/A";
+      const color = propiedad.getColor?.() ?? "N/A";
+      const mortgage = propiedad.getMortgage?.() ?? 0;
+      const hipotecada = propiedad.getHipotecada?.() ? "Sí" : "No";
+      const casas = propiedad.getCasas?.() ?? 0;
+      const hotel = propiedad.getHotel?.() ?? 0;
+      const dinero = jugador.getDinero?.() ?? 0;
 
-    return `
+      const casasInfo =
+        propiedad instanceof Ferrocarril
+          ? ""
+          : `<b>🏠 Casas:</b> ${
+              propiedad.getCasas?.() ?? 0
+            }    <b>🏢 Hotel:</b> ${propiedad.getHotel?.() ?? 0}`;
+
+      return `
       <b>Jugador:</b> ${jugador.getNombre()} 💰 $${dinero} <br>
       <b>Propiedad:</b> ${nombre} <br> 
       <b>Renta:</b> $${renta ?? 0} <br> 
       <b>Color:</b> ${color} <br> 
       <b>Mortgage:</b> ${mortgage} <br> 
       <b>Hipotecada:</b> ${hipotecada} <br>
-      <b>🏠 Casas($100):</b> ${casas}    <b>🏢 Hotel($250):</b> ${hotel}
+      ${casasInfo}
     `;
-  };
+    };
 
-  // Función única que actualiza el modal
-  const actualizarModal = () => {
-    modal.actualizarContenido(generarContenido());
-    this.actualizarScore(jugador.getId(), jugador.getDinero());
-  };
+    const actualizarModal = () => {
+      modal.actualizarContenido(generarContenido());
+      this.actualizarScore(jugador.getId(), jugador.getDinero());
 
-  // Mostramos el modal la primera vez
-  modal.show(generarContenido(), jugador, null, null, false, null, {
-    onHipotecar: () => {
-      jugador.hipotecar(propiedad);
-      actualizarModal();
-    },
-    onComprarCasa: propiedad.puedeConstruir(tablero)
-      ? () => {
-          const exito = this.comprarCasa(jugador, propiedad, tablero);
-          if (exito) actualizarModal();
+      if (propiedad instanceof Ferrocarril) {
+        modal.comprarCasa.hidden = true;
+      } else {
+        modal.comprarCasa.hidden = !propiedad.puedeConstruir(tablero);
+        modal.comprarCasa.textContent =
+          propiedad.getCasas() < 4
+            ? "Comprar Casa ($100)"
+            : "Comprar Hotel($250)";
+      }
+      // Actualizar texto y visibilidad del botón hipotecar/deshipotecar
+      if (propiedad.getHipotecada()) {
+        modal.hipotecar.textContent = "Deshipotecar";
+      } else {
+        modal.hipotecar.textContent = "Hipotecar";
+      }
+    };
+
+    // Mostrar modal la primera vez
+    modal.show(generarContenido(), jugador, null, null, false, null, {
+      onHipotecar: () => {
+        if (propiedad.getHipotecada()) {
+          jugador.deshipotecar(propiedad);
+        } else {
+          jugador.hipotecar(propiedad);
         }
-      : null
-  });
-}
+        actualizarModal();
+      },
+      onComprarCasa:
+        propiedad instanceof Ferrocarril
+          ? null
+          : propiedad.puedeConstruir(tablero)
+          ? () => {
+              if (propiedad.getCasas() < 4) {
+                this.comprarCasa(jugador, propiedad, tablero);
+              } else {
+                this.comprarHotel(jugador, propiedad, tablero); // hotel
+              }
+              actualizarModal();
+            }
+          : null,
+    });
+
+    actualizarModal(); // Inicializar estado correcto del botón
+  }
 }

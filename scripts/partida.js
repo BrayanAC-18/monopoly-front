@@ -130,11 +130,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     e.preventDefault(); // evitar el menú contextual del navegador
     const jugador = juego.getTurnoActual();
     if (!jugador.getEnCarcel()) {
-      let d1 = parseInt(prompt("Ingresa el valor del primer dado (1-6):"), 10);
-      let d2 = parseInt(prompt("Ingresa el valor del segundo dado (1-6):"), 10);
+      let d1 = parseInt(prompt("Ingresa el valor del primer dado:"), 10);
+      let d2 = parseInt(prompt("Ingresa el valor del segundo dado:"), 10);
 
       if (isNaN(d1) || isNaN(d2)) {
-        alert("Valores inválidos, deben estar entre 1 y 6.");
+        alert("Ingrese valores inválidos.");
         return;
       }
 
