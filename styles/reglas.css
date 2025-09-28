@@ -1,6 +1,6 @@
 /* Estilo general */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
   background: #f8f9fa;
@@ -14,7 +14,7 @@ body {
   color: white;
   text-align: center;
   padding: 2rem 1rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .header h1 {
@@ -29,7 +29,7 @@ body {
   padding: 1rem 2rem;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* Secciones */
@@ -64,4 +64,24 @@ body {
   background: #e9ecef;
   margin-top: 2rem;
   border-top: 1px solid #ccc;
+}
+
+.btn-volver {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #ece7d8;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-size: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+.btn-volver:hover {
+  background: #e0a800;
+  transform: scale(1.05);
 }
