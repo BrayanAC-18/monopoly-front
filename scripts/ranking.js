@@ -26,7 +26,8 @@ async function cargarRanking() {
   }
 }
 
-btnVolver = document.getElementById("btnVolver");
-btnVolver.addEventListener("click", () => {
-  window.location.href = "index.html"; // Redirige al HTML de inicio
+// Llamar a la carga cuando cargue la página
+document.addEventListener("DOMContentLoaded", () => {
+  cargarRanking();
 });
+

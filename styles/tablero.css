@@ -151,10 +151,13 @@ input[type="text"], textarea {
 
 .jugadores {
   display: flex;
+  flex-wrap: wrap; 
   gap: 1px;
+  margin-top: 4px;        
 }
 .jugadores span {
-  font-size: 12px;
+  font-size: 1.3rem;
+  line-height: 1;
 }
 
 #popupJugadorFicha {

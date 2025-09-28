@@ -206,9 +206,9 @@ document.addEventListener("DOMContentLoaded", async function () {
           // si es Especial
           if (typeof casillaActual.ejecutar === "function") {
             casillaActual.ejecutar(jugador); // aquí aparecerá el toast
-            juego.siguienteTurno(dados.isDouble);
-            actualizarEmojiTurno(juego.getTurnoActual());
           }
+          juego.siguienteTurno(dados.isDouble);
+          actualizarEmojiTurno(juego.getTurnoActual());
         }
       }
     );
