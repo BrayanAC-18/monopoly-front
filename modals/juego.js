@@ -57,6 +57,17 @@ export default class Juego {
     return this.ranking;
   }
 
+  finalizarSiPocosJugadores() {
+  // Filtra jugadores que no estén en bancarrota
+  const jugadoresActivos = this.jugadores.filter(j => !j.estaBancarota());
+
+  if (jugadoresActivos.length < 2) {
+    return this.finalizarJuego(); // reutiliza tu función existente
+  }
+
+  return null; // el juego sigue
+}
+
   //  Ganador según dinero + valor propiedades
   calcularGanador() {
     return this.jugadores.reduce(

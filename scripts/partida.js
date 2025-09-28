@@ -245,8 +245,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         jugador,
         () => {
           console.log(renta);
-          jugador.pagar(renta);
-          dueño.cobrar(renta);
+          const pudoPagar = jugador.pagar(renta);
+          if (!pudoPagar) {
+            // Si no puede pagar → cárcel
+            jugador.setEnCarcel(true);
+            jugador.setPosicion(10);
+            alert(`${jugador.getNombre()} no tiene dinero y fue enviado a la cárcel.`);
+          } else {
+            dueño.cobrar(renta);
+          }
           sidebar.actualizarScore(jugador.getId(), jugador.getDinero());
           sidebar.actualizarScore(dueño.getId(), dueño.getDinero());
           juego.siguienteTurno(dados.isDouble);
