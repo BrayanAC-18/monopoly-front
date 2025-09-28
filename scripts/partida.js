@@ -208,8 +208,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             juego.siguienteTurno(dados.isDouble);
             actualizarEmojiTurno(juego.getTurnoActual());
           }
-          juego.siguienteTurno(dados.isDouble);
-          actualizarEmojiTurno(juego.getTurnoActual());
         }
       }
     );
