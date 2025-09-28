@@ -205,7 +205,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         } else {
           // si es Especial
           if (typeof casillaActual.ejecutar === "function") {
-            casillaActual.ejecutar(jugador); // aquí aparecerá el toast
+            juego.siguienteTurno(dados.isDouble);
+            actualizarEmojiTurno(juego.getTurnoActual());
           }
           juego.siguienteTurno(dados.isDouble);
           actualizarEmojiTurno(juego.getTurnoActual());
@@ -216,7 +217,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   function manejarCompraOCobro(casilla, jugador, dados) {
     const dueño = casilla.getDueño();
-    if (dueño && !casilla.getHipotecada()) {
+    if (dueño && dueño !== jugador && !casilla.getHipotecada()) {
       // Calcular renta según el tipo de casilla
       let renta =
         casilla instanceof Ferrocarril

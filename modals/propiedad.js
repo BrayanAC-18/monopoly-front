@@ -163,7 +163,7 @@ export default class Propiedad extends Casilla {
     return false;
   }
   getHotel(){
-    return this.hotel?"1":"0"
+    return this.hotel?1:0
   }
 
   //  Para sidebar

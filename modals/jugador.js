@@ -1,4 +1,5 @@
 import Ferrocarril from "../modals/ferrocarril.js";
+import Especial from "../modals/especial.js";
 export default class Jugador {
   constructor(id, nombre, pais, ficha, color) {
     this.id = id;
@@ -38,8 +39,9 @@ export default class Jugador {
   const casilla = tablero.obtenerCasilla(this.posicion);
 
   if (casilla) {
-    // Ejecutar acción de la casilla
-    casilla.ejecutar(this);
+    if (casilla instanceof Especial) {
+      casilla.ejecutar(this);
+    }
   } else {
     console.warn(`No se encontró casilla con id ${this.posicion}`);
   }
