@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   function manejarCompraOCobro(casilla, jugador, dados) {
     const dueño = casilla.getDueño();
-    if (dueño && !casilla.getHipotecada()) {
+    if (dueño && dueño !== jugador && !casilla.getHipotecada()) {
       // Calcular renta según el tipo de casilla
       let renta =
         casilla instanceof Ferrocarril
