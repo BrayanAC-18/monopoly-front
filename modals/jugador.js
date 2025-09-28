@@ -12,6 +12,10 @@ export default class Jugador {
     this.posicion = 0;
   }
 
+  estaBancarota() {
+    return this.dinero <= 0; // true si no tiene dinero
+  }
+
   numeroDeFerros(){
     return this.propiedades.filter((p) => p instanceof Ferrocarril).length;
   }
@@ -66,7 +70,6 @@ export default class Jugador {
   pagar(cantidad) {
     this.dinero -= cantidad;
     if (this.dinero < 0) {
-      // aquí podrías marcar bancarrota
       this.dinero = 0;
       return false;
     }
@@ -114,4 +117,6 @@ export default class Jugador {
   getColor() {return this.color}
   getPosicion() { return this.posicion; }
   setPosicion(casillaId) { this.posicion = casillaId; }
+
+  
 }

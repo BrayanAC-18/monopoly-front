@@ -41,30 +41,74 @@ export default class Especial extends Casilla {
         if (this.accion?.goTo) {
           jugador.setEnCarcel(true);
           jugador.setPosicion(10);
-          showToast("Casilla Especial", `${jugador.getNombre()} fue enviado a la cárcel.`, "danger");
+          showToast(
+            "Casilla Especial",
+            `${jugador.getNombre()} fue enviado a la cárcel.`,
+            "danger"
+          );
         }
         break;
 
-      case "tax":
-        jugador.pagar(-this.accion.money);
-        showToast("Impuesto", `${jugador.getNombre()} pagó $${-this.accion.money} por ${this.nombre}`, "warning");
-        break;
+      case "tax": {
+        const pudoPagar = jugador.pagar(-this.accion.money);
+        if (!pudoPagar) {
+          jugador.setEnCarcel(true);
+          jugador.setPosicion(10);
+          alert(
+            `${jugador.getNombre()} no tiene dinero y fue enviado a la cárcel.`
+          );
+        } else {
+          showToast(
+            "Impuesto",
+            `${jugador.getNombre()} pagó $${-this.accion.money} por ${
+              this.nombre
+            }`,
+            "warning"
+          );
+        }
 
-      case "chance": {
-        const carta = this.tomarCarta(Especial.chance);
-        if (carta.action.money < 0) jugador.pagar(-carta.action.money);
-        else jugador.cobrar(carta.action.money);
-
-        showToast("Sorpresa", `${jugador.getNombre()} tomó carta: ${carta.description}`, "info");
         break;
       }
-
+      case "chance": {
+        const carta = this.tomarCarta(Especial.chance);
+        showToast(
+          "Sorpresa",
+          `${jugador.getNombre()} tomó carta: ${carta.description}`,
+          "info"
+        );
+        if (carta.action.money < 0) {
+          const pudoPagar = jugador.pagar(-carta.action.money);
+          if (!pudoPagar) {
+            jugador.setEnCarcel(true);
+            jugador.setPosicion(10);
+            alert(
+              `${jugador.getNombre()} no tiene dinero y fue enviado a la cárcel.`
+            );
+          }
+        } else {
+          jugador.cobrar(carta.action.money);
+        }
+        break;
+      }
       case "community_chest": {
         const carta = this.tomarCarta(Especial.community);
-        if (carta.action.money < 0) jugador.pagar(-carta.action.money);
-        else jugador.cobrar(carta.action.money);
-
-        showToast("Caja de Comunidad", `${jugador.getNombre()} tomó carta: ${carta.description}`, "primary");
+        showToast(
+          "Caja de Comunidad",
+          `${jugador.getNombre()} tomó carta: ${carta.description}`,
+          "primary"
+        );
+        if (carta.action.money < 0) {
+          const pudoPagar = jugador.pagar(-carta.action.money);
+          if (!pudoPagar) {
+            jugador.setEnCarcel(true);
+            jugador.setPosicion(10);
+            alert(
+              `${jugador.getNombre()} no tiene dinero y fue enviado a la cárcel.`
+            );
+          }
+        } else {
+          jugador.cobrar(carta.action.money);
+        }
         break;
       }
     }
