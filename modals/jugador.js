@@ -11,6 +11,7 @@ export default class Jugador {
     this.propiedades = [];
     this.enCarcel = false;
     this.posicion = 0;
+    this.hipotecas = 0
   }
 
   estaBancarota() {
@@ -87,7 +88,10 @@ export default class Jugador {
       const dineroRecibido = propiedad.hipotecar();
       if (dineroRecibido > 0){
         this.cobrar(dineroRecibido);
+        this.hipotecas +=1
+        return true
       }
+      return false;
     }
   }
 
@@ -105,6 +109,7 @@ export default class Jugador {
   // Getters y Setters
   getDinero() { return this.dinero; }
   setDinero(cantidad) { this.dinero = Math.max(0, cantidad); }
+  getHipotecas(){return this.hipotecas}
 
   getPropiedades() { return this.propiedades; }
 

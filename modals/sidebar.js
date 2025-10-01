@@ -1,6 +1,7 @@
 import ModalPopup from "../modals/popup.js";
 import Ferrocarril from "../modals/ferrocarril.js";
 import Juego from "../modals/juego.js";
+import { semaforoHipoteca } from "../modals/semaforo.js";
 export default class Sidebar {
   constructor(desktopContainer, mobileContainer, jugadores) {
     this.desktop = desktopContainer;
@@ -21,6 +22,7 @@ export default class Sidebar {
             <img src="https://flagsapi.com/${p.getPais()}/flat/32.png" class="ms-auto">
           </div>
           <p class="mt-2 mb-1">💰 <span class="score">${p.getDinero()}</span></p>
+          <div class="semaforo"></div>
           <h6 class="small">Propiedades:</h6>
           <ul class="properties list-unstyled"></ul>
         </div>
@@ -38,7 +40,7 @@ export default class Sidebar {
     });
   }
 
-  añadirPropiedad(playerId, propiedad, tablero,juego) {
+  añadirPropiedad(playerId, propiedad, tablero, juego) {
     const cards = document.querySelectorAll(`[data-player="${playerId}"]`);
     if (!cards.length) return;
 
@@ -91,7 +93,7 @@ export default class Sidebar {
     }
   }
 
-  mostrarModalPropiedad(jugador, propiedad, tablero,juego) {
+  mostrarModalPropiedad(jugador, propiedad, tablero, juego) {
     const modal = new ModalPopup();
 
     // Solo habilitar botones si es el turno del jugador
@@ -142,25 +144,31 @@ export default class Sidebar {
             ? "Comprar Casa ($100)"
             : "Comprar Hotel($250)";
       }
-      
+
       // Actualizar texto y visibilidad del botón hipotecar/deshipotecar
       if (esTurnoJugador) {
-      modal.hipotecar.hidden = false;
-      modal.hipotecar.textContent = propiedad.getHipotecada() ? "Deshipotecar" : "Hipotecar";
+        modal.hipotecar.hidden = false;
+        modal.hipotecar.textContent = propiedad.getHipotecada()
+          ? "Deshipotecar"
+          : "Hipotecar";
       } else {
         modal.hipotecar.hidden = true;
       }
-  };
+    };
 
     // Mostrar modal la primera vez
     modal.show(generarContenido(), jugador, null, null, false, null, {
       onHipotecar: () => {
-
         if (propiedad.getHipotecada()) {
           jugador.deshipotecar(propiedad);
+          if (jugador.getHipotecas() > 0) {
+            jugador.hipotecas -= 1; //si deshipoteca, actualizar contador de hipotecas
+          }
         } else {
           jugador.hipotecar(propiedad);
+          jugador.hipotecas += 1; // actualizar contador de hipotecas
         }
+        semaforoHipoteca(jugador, this, juego); // actualizar semaforo
         actualizarModal();
       },
       onComprarCasa:
