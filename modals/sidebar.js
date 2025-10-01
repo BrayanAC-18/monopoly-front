@@ -48,7 +48,7 @@ export default class Sidebar {
       let select = card.querySelector("select.properties-select");
       if (!select) {
         select = document.createElement("select");
-        select.classList.add("properties-select");
+        select.classList.add("form-select", "properties-select");
         select.innerHTML = `<option disabled selected>Propiedades</option>`;
         card.appendChild(select);
 
@@ -67,6 +67,7 @@ export default class Sidebar {
       const option = document.createElement("option");
       option.textContent = propiedad.getNombre();
       option.propiedadObj = propiedad;
+      option.classList.add("form-select-option")
       select.appendChild(option);
     });
   }
